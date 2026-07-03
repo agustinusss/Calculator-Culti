@@ -1,0 +1,2110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cultivation Tools</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080c14;
+  --surface: #0d1526;
+  --surface2: #111e35;
+  --border: #1a2d4a;
+  --border2: #243d60;
+  --accent: #00c8ff;
+  --accent2: #ff6b35;
+  --gold: #f0c040;
+  --green: #39e07a;
+  --purple: #b46ef5;
+  --text: #c8d8f0;
+  --muted: #556a88;
+  --white: #ffffff;
+  --glow-blue: 0 0 20px rgba(0,200,255,0.3);
+  --glow-orange: 0 0 20px rgba(255,107,53,0.3);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Exo 2', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  overflow-x: hidden;
+}
+
+@keyframes rgb-glow {
+  0%   { box-shadow: 0 0 20px rgba(255,0,100,0.5); border-color: rgba(255,0,100,0.6); }
+  25%  { box-shadow: 0 0 20px rgba(0,200,255,0.5); border-color: rgba(0,200,255,0.6); }
+  50%  { box-shadow: 0 0 20px rgba(100,255,0,0.5); border-color: rgba(100,255,0,0.6); }
+  75%  { box-shadow: 0 0 20px rgba(255,180,0,0.5); border-color: rgba(255,180,0,0.6); }
+  100% { box-shadow: 0 0 20px rgba(255,0,100,0.5); border-color: rgba(255,0,100,0.6); }
+}
+.rgb-card { animation: rgb-glow 2s linear infinite; }
+
+/* BG pattern */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 10%, rgba(0,200,255,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 90%, rgba(255,107,53,0.03) 0%, transparent 50%);
+  pointer-events: none; z-index: 0;
+}
+
+/* ===== SIDEBAR ===== */
+#sidebar {
+  width: 220px;
+  min-height: 100vh;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed; top: 0; left: 0;
+  z-index: 50;
+  transition: transform 0.3s ease;
+}
+
+#sidebar.collapsed { transform: translateX(-220px); }
+
+.sidebar-logo {
+  padding: 22px 18px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-logo-text {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.sidebar-logo-sub {
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 2px;
+  margin-top: 3px;
+}
+
+.sidebar-section {
+  padding: 14px 12px 6px;
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.nav-link:hover { color: var(--text); background: rgba(0,200,255,0.05); }
+.nav-link.active { color: var(--accent); border-left-color: var(--accent); background: rgba(0,200,255,0.08); }
+
+.nav-icon { font-size: 15px; width: 18px; text-align: center; }
+
+.sidebar-divider { height: 1px; background: var(--border); margin: 8px 18px; }
+
+.sidebar-ext-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 18px;
+  font-size: 12px; color: var(--muted);
+  cursor: pointer; transition: color 0.2s;
+  text-decoration: none;
+}
+.sidebar-ext-link:hover { color: var(--text); }
+
+/* ===== MAIN ===== */
+#main {
+  margin-left: 220px;
+  flex: 1;
+  position: relative; z-index: 1;
+  transition: margin-left 0.3s ease;
+  min-height: 100vh;
+}
+
+#main.full { margin-left: 0; }
+
+/* ===== TOPBAR ===== */
+.topbar {
+  position: sticky; top: 0; z-index: 40;
+  background: rgba(8,12,20,0.9);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+  display: flex; align-items: center; gap: 14px;
+}
+
+.toggle-btn {
+  background: none; border: none;
+  cursor: pointer; padding: 6px;
+  display: flex; flex-direction: column;
+  gap: 4px;
+}
+
+.toggle-btn span {
+  display: block; width: 20px; height: 2px;
+  background: var(--text); border-radius: 2px;
+  transition: all 0.2s;
+}
+
+.topbar-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 14px; font-weight: 700;
+  color: var(--accent); letter-spacing: 2px;
+}
+
+/* ===== PAGES ===== */
+.page { display: none; padding: 24px 20px 60px; max-width: 560px; margin: 0 auto; }
+.page.active { display: block; }
+
+/* ===== CARDS ===== */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px 20px;
+  margin-bottom: 18px;
+  position: relative; overflow: hidden;
+  animation: slideUp 0.4s ease both;
+}
+
+.card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.card-tag {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 9px; font-weight: 600;
+  color: var(--accent); letter-spacing: 3px;
+  text-transform: uppercase; margin-bottom: 6px;
+}
+
+.card-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 16px; font-weight: 700;
+  color: var(--white); letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.card-desc {
+  font-size: 11px; color: var(--muted);
+  letter-spacing: 0.5px; margin-bottom: 18px;
+}
+
+.divider { height: 1px; background: var(--border); margin: 16px 0; }
+
+/* ===== FORM ===== */
+.field { margin-bottom: 14px; }
+
+label {
+  display: block; font-size: 11px; font-weight: 600;
+  color: var(--muted); letter-spacing: 2px;
+  text-transform: uppercase; margin-bottom: 7px;
+}
+
+input[type="number"], select {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-family: 'Orbitron', monospace;
+  font-size: 14px; color: var(--text);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none;
+}
+
+input[type="number"]:focus, select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(0,200,255,0.15);
+}
+
+select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23556a88'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+
+select option { background: #111e35; }
+
+/* ===== RESULT BOX ===== */
+.result-label {
+  font-size: 11px; font-weight: 600;
+  color: var(--muted); letter-spacing: 2px;
+  text-transform: uppercase; margin-bottom: 8px;
+}
+
+.result-box {
+  background: linear-gradient(135deg, #0a1f3d 0%, #0d2a55 100%);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  padding: 16px 18px;
+  display: flex; justify-content: space-between; align-items: center;
+  box-shadow: var(--glow-blue);
+  transition: box-shadow 0.3s;
+}
+
+.result-box.orange {
+  background: linear-gradient(135deg, #2a160a 0%, #3d1f0a 100%);
+  border-color: var(--accent2);
+  box-shadow: var(--glow-orange);
+}
+
+.result-name { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.75); }
+
+.result-val {
+  font-family: 'Orbitron', monospace;
+  font-size: 20px; font-weight: 700; color: var(--white);
+}
+
+@keyframes flash {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.result-val.flash { animation: flash 0.3s ease; }
+
+/* ===== MAX COEFFS ===== */
+.coeff-grid {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 8px; margin-bottom: 4px;
+}
+
+.coeff-item {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 6px;
+  text-align: center;
+}
+
+.coeff-stat {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 9px; color: var(--accent);
+  letter-spacing: 1px; margin-bottom: 4px;
+}
+
+.coeff-val {
+  font-family: 'Orbitron', monospace;
+  font-size: 12px; font-weight: 700; color: var(--white);
+}
+
+/* ===== RARITY BADGE ===== */
+.rarity-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 1px; text-transform: uppercase;
+  margin-top: 6px;
+}
+
+/* Scare - ชมพูอ่อน */
+.rb-scare {
+  background: rgba(255,182,193,0.12);
+  color: #ffb6c1;
+  border: 1px solid #ff8da1;
+}
+
+/* Epic - เหลือง */
+.rb-epic {
+  background: rgba(255,215,0,0.12);
+  color: #ffd700;
+  border: 1px solid #c9a200;
+}
+
+/* Legendary - ม่วง */
+.rb-legendary {
+  background: rgba(180,110,245,0.12);
+  color: #c084fc;
+  border: 1px solid #7c3aed;
+}
+
+/* Immortal - ชมพูเข้ม */
+.rb-immortal {
+  background: rgba(255,20,147,0.12);
+  color: #ff1493;
+  border: 1px solid #c71585;
+}
+
+/* Mythical - ส้ม */
+.rb-mythical {
+  background: rgba(255,140,0,0.12);
+  color: #ff8c00;
+  border: 1px solid #c25e00;
+}
+
+/* Eternal - ทอง */
+.rb-eternal {
+  background: rgba(255,215,0,0.15);
+  color: #f0c040;
+  border: 1px solid #a07010;
+}
+
+/* Celestial - แดง */
+.rb-celestial {
+  background: rgba(255,0,0,0.12);
+  color: #ff4d4d;
+  border: 1px solid #b30000;
+}
+
+/* Primordial - เขียว (เพิ่มใหม่) */
+.rb-primordial {
+  background: rgba(0,255,127,0.12);
+  color: #00ff7f;
+  border: 1px solid #00b35a;
+}
+
+/* Transcendent - น้ำเงิน (เพิ่มใหม่) */
+.rb-transcendent {
+  background: rgba(30,144,255,0.12);
+  color: #1e90ff;
+  border: 1px solid #0b5ed7;
+}
+/* ===== FORMULA HINT ===== */
+.formula-hint {
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: rgba(0,200,255,0.04);
+  border: 1px dashed rgba(0,200,255,0.2);
+  border-radius: 8px;
+  font-size: 10px; color: var(--muted);
+  line-height: 1.9; letter-spacing: 0.3px;
+}
+.formula-hint b { color: var(--accent); font-weight: 600; }
+
+/* ===== ELIXIR ===== */
+.elixir-checkboxes {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-bottom: 16px;
+}
+
+.rar-check {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 10px;
+  border-radius: 6px; cursor: pointer;
+  border: 1px solid var(--border);
+  font-size: 12px; font-weight: 500;
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.rar-check input { display: none; }
+.rar-check.checked { border-color: var(--accent); background: rgba(0,200,255,0.08); color: var(--accent); }
+
+.elixir-section { margin-bottom: 14px; }
+
+.elixir-section-header {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px; border-radius: 8px;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 1px; margin-bottom: 8px;
+}
+
+.elixir-inputs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+
+.elixir-input-group label {
+  font-size: 9px; margin-bottom: 4px;
+  color: var(--muted); letter-spacing: 1.5px;
+}
+
+.elixir-input-group input {
+  padding: 8px 10px;
+  font-size: 13px;
+}
+
+.totals-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+
+.total-item {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.total-item-label { font-size: 10px; color: var(--muted); letter-spacing: 1px; margin-bottom: 4px; text-transform: uppercase; }
+.total-item-val { font-family: 'Orbitron', monospace; font-size: 14px; font-weight: 600; color: var(--accent); }
+
+/* ===== WORLD CALC ===== */
+.world-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.result-stat {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+}
+
+.result-stat-label { font-size: 10px; color: var(--muted); letter-spacing: 1px; margin-bottom: 6px; text-transform: uppercase; }
+.result-stat-val { font-family: 'Orbitron', monospace; font-size: 16px; font-weight: 700; color: var(--green); }
+
+.btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none; cursor: pointer;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 1.5px;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #005577, #007fa0);
+  color: var(--white);
+  border: 1px solid var(--accent);
+}
+.btn-primary:hover { box-shadow: var(--glow-blue); }
+
+.btn-danger {
+  background: rgba(255,60,60,0.1);
+  color: #ff6060;
+  border: 1px solid rgba(255,60,60,0.3);
+}
+
+.btn-row { display: flex; gap: 10px; margin-top: 12px; }
+
+.compare-table-wrap { overflow-x: auto; margin-top: 12px; }
+.compare-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.compare-table th { background: rgba(0,200,255,0.08); color: var(--accent); padding: 8px 10px; text-align: left; font-size: 10px; letter-spacing: 1px; border-bottom: 1px solid var(--border); }
+.compare-table td { padding: 8px 10px; border-bottom: 1px solid rgba(26,45,74,0.5); color: var(--text); }
+.compare-table tr:last-child td { border-bottom: none; }
+
+/* overlay */
+#sidebar-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 45;
+}
+
+/* responsive */
+@media (max-width: 640px) {
+  #sidebar { transform: translateX(-220px); }
+  #sidebar.open { transform: translateX(0); }
+  #main { margin-left: 0; }
+  #sidebar-overlay { display: none; }
+  #sidebar-overlay.show { display: block; }
+  .coeff-grid { grid-template-columns: repeat(3, 1fr); }
+}
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside id="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-text">Cultivation</div>
+    <div class="sidebar-logo-sub">// TOOLS v2.0</div>
+  </div>
+  <div class="sidebar-section">Tools</div>
+  <a class="nav-link active" data-page="wing" href="#">
+    <span class="nav-icon">🪶</span> Wing Calculator
+  </a>
+  <a class="nav-link" data-page="elixir" href="#">
+    <span class="nav-icon">⚗️</span> Elixir Calculator
+  </a>
+  <a class="nav-link" data-page="world" href="#">
+    <span class="nav-icon">🌍</span> World Calculator
+  </a>
+  <a class="nav-link" data-page="simulator" href="#">
+    <span class="nav-icon">🪽</span> Wing Simulator
+  </a>
+  <a class="nav-link" data-page="reroll" href="#">
+    <span class="nav-icon">🎲</span> Reroll Simulator
+  </a>
+  <a class="nav-link" data-page="absorb" href="#">
+    <span class="nav-icon">💊</span> Absorb Analysis
+  </a>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section">Links</div>
+  <a class="sidebar-ext-link" href="https://www.roblox.com/games/18645473062" target="_blank">🎮 Roblox Game</a>
+  <a class="sidebar-ext-link" href="https://discord.com/invite/gFgcEavupb" target="_blank">💬 Discord Server</a>
+</aside>
+
+<div id="sidebar-overlay"></div>
+
+<!-- Main -->
+<main id="main">
+  <div class="topbar">
+    <button class="toggle-btn" id="toggle-btn" aria-label="Toggle sidebar">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="topbar-title">CULTIVATION TOOLS</div>
+  </div>
+
+  <!-- ===== WING PAGE ===== -->
+  <div class="page active" id="page-wing">
+
+    <!-- Max Coefficients -->
+    <div class="card">
+      <div class="card-tag">// Reference</div>
+      <div class="card-title">Max Wing Coefficients</div>
+      <div class="card-desc">Maximum possible coefficient values per stat type</div>
+      <div class="coeff-grid">
+        <div class="coeff-item"><div class="coeff-stat">ATBM</div><div class="coeff-val">1.500</div></div>
+        <div class="coeff-item"><div class="coeff-stat">DTM</div><div class="coeff-val">1.200</div></div>
+        <div class="coeff-item"><div class="coeff-stat">DTP</div><div class="coeff-val">0.45</div></div>
+        <div class="coeff-item"><div class="coeff-stat">HPBM</div><div class="coeff-val">1.500</div></div>
+        <div class="coeff-item"><div class="coeff-stat">Speed</div><div class="coeff-val">0.900</div></div>
+        <div class="coeff-item"><div class="coeff-stat">Pdr</div><div class="coeff-val">0.45</div></div>
+        <div class="coeff-item"><div class="coeff-stat">Mdr</div><div class="coeff-val">0.45</div></div>
+      </div>
+    </div>
+
+    <!-- Section 1: Coefficient Calculator -->
+    <div class="card">
+      <div class="card-tag">// Section 01</div>
+      <div class="card-title">Wing Coefficient</div>
+      <div class="card-desc">Calculate Wing Coefficient from ATBM%</div>
+      <div class="divider"></div>
+
+      <div class="field">
+        <label>Wing Percentage (ATBM %)</label>
+        <input type="number" id="coeff-pct" value="0" min="0" step="0.001" placeholder="0.000">
+      </div>
+      <div class="field">
+        <label>Level</label>
+        <input type="number" id="coeff-level" value="1" min="1" max="1800" placeholder="1">
+      </div>
+      <div class="field">
+        <label>Rarity Wing</label>
+        <select id="coeff-rarity"></select>
+        <div id="coeff-badge" class="rarity-badge rb-scarce">Scarce</div>
+      </div>
+
+      <div class="result-label">Result</div>
+      <div class="result-box">
+        <span class="result-name">Wing Coefficient</span>
+        <span class="result-val" id="coeff-result">0.00000</span>
+      </div>
+
+      <div class="formula-hint">
+        <b>base</b> = (0.05 + (lv−1)×0.0000556) × (1 + (rarity−5)×0.1) × 6.25 × (rarity−5)/7<br>
+        <b>Coefficient</b> = (ATBM% / 100) / base
+      </div>
+    </div>
+
+    <!-- Section 2: ATBM Calculator -->
+    <div class="card">
+      <div class="card-tag">// Section 02</div>
+      <div class="card-title">ATBM Calculator</div>
+      <div class="card-desc">Calculate ATBM% from Wing Coefficient</div>
+      <div class="divider"></div>
+
+      <div class="field">
+        <label>Wing Coefficient</label>
+        <input type="number" id="atbm-coeff" value="0" min="0" step="0.00001" placeholder="0.00000">
+      </div>
+      <div class="field">
+        <label>Level</label>
+        <input type="number" id="atbm-level" value="1" min="1" max="1800" placeholder="1">
+      </div>
+      <div class="field">
+        <label>Rarity Wing</label>
+        <select id="atbm-rarity"></select>
+        <div id="atbm-badge" class="rarity-badge rb-scarce">Scarce</div>
+      </div>
+
+      <div class="result-label">Result</div>
+      <div class="result-box orange">
+        <span class="result-name">ATBM %</span>
+        <span class="result-val" id="atbm-result">0.000%</span>
+      </div>
+
+      <div class="formula-hint">
+        <b>ATBM%</b> = Coefficient × base × 100
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== ELIXIR PAGE ===== -->
+  <div class="page" id="page-elixir">
+    <div class="card">
+      <div class="card-tag">// Elixir</div>
+      <div class="card-title">Elixir Calculator</div>
+      <div class="card-desc">Calculate total points and absorb stats from elixirs</div>
+      <div class="divider"></div>
+
+      <div class="result-label">Select Rarities</div>
+      <div class="elixir-checkboxes" id="elixir-checkboxes"></div>
+    </div>
+
+    <div id="elixir-sections"></div>
+
+    <div class="card">
+      <div class="card-tag">// Totals</div>
+      <div class="card-title">Total Points</div>
+      <div class="divider"></div>
+      <div class="totals-grid" id="elixir-points-totals"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-tag">// Absorb</div>
+      <div class="card-title">Total Absorb Stats</div>
+      <div class="divider"></div>
+      <div class="totals-grid" id="elixir-absorb-totals"></div>
+    </div>
+  </div>
+
+  <!-- ===== WORLD PAGE ===== -->
+  <div class="page" id="page-world">
+    <div class="card">
+      <div class="card-tag">// World Rate</div>
+      <div class="card-title">World Rate Calculator</div>
+      <div class="card-desc">Calculate farming rates per hour</div>
+      <div class="divider"></div>
+
+      <div class="world-grid">
+        <div class="field">
+          <label>Difficulty</label>
+          <select id="difficulty-select"></select>
+        </div>
+        <div class="field">
+          <label>World</label>
+          <select id="world-select"></select>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="result-label">Base Stats (Auto)</div>
+      <div class="results-grid" style="margin-bottom:0">
+        <div class="result-stat"><div class="result-stat-label">Exp / Clear</div><div class="result-stat-val" style="color:var(--accent)" id="base-exp">—</div></div>
+        <div class="result-stat"><div class="result-stat-label">Ore / Drop</div><div class="result-stat-val" style="color:var(--accent)" id="base-ore">—</div></div>
+        <div class="result-stat"><div class="result-stat-label">Gold / Clear</div><div class="result-stat-val" style="color:var(--gold)" id="base-gold">—</div></div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="field"><label>Clear Time (sec)</label><input type="number" id="clear-time" value="60" min="1"></div>
+
+      <div class="result-label">Drop Buff (%)</div>
+      <div class="world-grid">
+        <div class="field"><label>Gold Drop %</label><input type="number" id="gold-drop" value="0" min="0"></div>
+        <div class="field"><label>Ore Drop %</label><input type="number" id="ore-drop" value="0" min="0"></div>
+        <div class="field"><label>Exp Gain %</label><input type="number" id="exp-gain" value="0" min="0"></div>
+      </div>
+
+      <div class="result-label">Extra Drop</div>
+      <div class="world-grid">
+        <div class="field"><label>Extra Gold Drop</label><input type="number" id="extra-gold" value="0" min="0"></div>
+        <div class="field"><label>Extra Exp Drop</label><input type="number" id="extra-exp" value="0" min="0"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-tag">// Results</div>
+      <div class="card-title">Rates Per Hour</div>
+      <div class="divider"></div>
+      <div class="results-grid">
+        <div class="result-stat"><div class="result-stat-label">Exp / Hour</div><div class="result-stat-val" id="result-xp">0</div></div>
+        <div class="result-stat"><div class="result-stat-label">Ore / Hour</div><div class="result-stat-val" id="result-ore">0</div></div>
+        <div class="result-stat"><div class="result-stat-label">Gold / Hour</div><div class="result-stat-val" id="result-gold">0</div></div>
+        <div class="result-stat"><div class="result-stat-label">Clears / Hour</div><div class="result-stat-val" id="result-clears">0</div></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="compare-btn">+ Add to Compare</button>
+        <button class="btn btn-danger" id="clear-compare-btn">Clear</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-tag">// Compare</div>
+      <div class="card-title">World Comparison</div>
+      <div class="divider"></div>
+      <div id="compare-container"><p style="color:var(--muted);font-size:12px;">No worlds added yet.</p></div>
+    </div>
+  </div>
+<!-- ===== WING SIMULATOR PAGE ===== -->
+<div class="page" id="page-simulator">
+
+  <!-- Guide Table -->
+  <div class="card">
+    <div class="card-tag">// Reference</div>
+    <div class="card-title">Upgrade Guide</div>
+    <div class="card-desc">WC cost per attempt & pity accumulation per fail</div>
+    <div class="divider"></div>
+    <div class="compare-table-wrap">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Upgrade</th>
+            <th>WC/Click</th>
+            <th>Base Rate</th>
+            <th>+Rate/Fail</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Scarce → Epic</td><td>1</td><td>0.3%</td><td>+0.3%</td></tr>
+          <tr><td>Epic → Legendary</td><td>2</td><td>0.2%</td><td>+0.2%</td></tr>
+          <tr><td>Legendary → Immortal</td><td>4</td><td>0.1%</td><td>+0.1%</td></tr>
+          <tr><td>Immortal → Mythic</td><td>6</td><td>0.04%</td><td>+0.04%</td></tr>
+          <tr><td>Mythic → Eternal</td><td>8</td><td>0.02%</td><td>+0.02%</td></tr>
+          <tr><td>Eternal → Celestial</td><td>10</td><td>0.001%</td><td>+0.001%</td></tr>
+          <tr><td>Celestial → Primordial</td><td>10</td><td>0.0002%</td><td>+0.0002%</td></tr>
+          <tr><td>Primordial → Transcendent</td><td>10</td><td>0.0001%</td><td>+0.0001%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Setup -->
+  <div class="card">
+    <div class="card-tag">// Setup</div>
+    <div class="card-title">Wing Upgrade Simulator</div>
+    <div class="divider"></div>
+
+    <div class="world-grid">
+      <div class="field">
+        <label>Starting Rarity</label>
+        <select id="sim-start-rarity">
+          <option value="0">Scarce</option>
+          <option value="1">Epic</option>
+          <option value="2">Legendary</option>
+          <option value="3">Immortal</option>
+          <option value="4">Mythic</option>
+          <option value="5">Eternal</option>
+          <option value="6">Celestial</option>
+          <option value="7">Primordial</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Target Rarity</label>
+        <select id="sim-target-rarity">
+          <option value="1">Epic</option>
+          <option value="2">Legendary</option>
+          <option value="3">Immortal</option>
+          <option value="4">Mythic</option>
+          <option value="5">Eternal</option>
+          <option value="6">Celestial</option>
+          <option value="7">Primordial</option>
+          <option value="8">Transcendent</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Wing Core (WC) Amount</label>
+      <input type="number" id="sim-wc" value="100" min="1">
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" id="sim-run-btn">▶ Run Simulation</button>
+      <button class="btn btn-danger" id="sim-reset-btn">↺ Reset</button>
+    </div>
+  </div>
+
+  <!-- Current Status -->
+  <div class="card" id="sim-status-card" style="display:none">
+    <div class="card-tag">// Status</div>
+    <div class="card-title">Current Run</div>
+    <div class="divider"></div>
+    <div class="results-grid">
+      <div class="result-stat">
+        <div class="result-stat-label">Current Rarity</div>
+        <div class="result-stat-val" id="sim-cur-rarity" style="font-size:13px">—</div>
+      </div>
+      <div class="result-stat">
+        <div class="result-stat-label">WC Remaining</div>
+        <div class="result-stat-val" id="sim-wc-left">—</div>
+      </div>
+      <div class="result-stat">
+        <div class="result-stat-label">Current Rate</div>
+        <div class="result-stat-val" id="sim-cur-rate" style="color:var(--gold)">—</div>
+      </div>
+      <div class="result-stat">
+        <div class="result-stat-label">Click</div>
+        <div class="result-stat-val" id="sim-attempts">—</div>
+      </div>
+    </div>
+
+    <!-- Step Controls -->
+    <div class="btn-row" style="margin-top:14px">
+      <button class="btn btn-primary" id="sim-step-btn">⚡ Upgrade</button>
+      <button class="btn" style="background:rgba(0,200,255,0.1);color:var(--accent);border:1px solid var(--accent)" id="sim-auto-btn">⏩ Auto Run</button>
+    </div>
+
+    <!-- Log -->
+    <div style="margin-top:14px">
+      <div class="result-label">Upgrade Log</div>
+      <div id="sim-log" style="
+        max-height:160px; overflow-y:auto;
+        background:rgba(0,0,0,0.3);
+        border:1px solid var(--border);
+        border-radius:8px; padding:10px;
+        font-size:11px; line-height:1.9;
+        font-family:'Orbitron',monospace;
+        color:var(--muted);
+      "></div>
+    </div>
+  </div>
+
+  <!-- Stats Summary -->
+  <div class="card" id="sim-stats-card">
+    <div class="card-tag">// Statistics</div>
+    <div class="card-title">WC Usage Per Stage</div>
+    <div class="divider"></div>
+    <div id="sim-stage-stats">
+      <p style="color:var(--muted);font-size:12px;">Run a simulation to see stats.</p>
+    </div>
+  </div>
+
+</div>
+<!-- ===== REROLL SIMULATOR PAGE ===== -->
+<div class="page" id="page-reroll">
+
+  <!-- Attribute List -->
+  <div class="card">
+    <div class="card-tag">// Reference</div>
+    <div class="card-title">Attribute List</div>
+    <div class="card-desc">19 attributes · equal drop rate · slots 1-3 cannot be rerolled</div>
+    <div class="divider"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 12px">
+      <div style="font-size:11px;color:var(--muted)">1. Hp Boost</div>
+      <div style="font-size:11px;color:var(--muted)">2. Attack Boost</div>
+      <div style="font-size:11px;color:var(--muted)">3. Dodge Rate</div>
+      <div style="font-size:11px;color:var(--muted)">4. Ignore Dodge Rate</div>
+      <div style="font-size:11px;color:var(--muted)">5. Critical Hit Rate</div>
+      <div style="font-size:11px;color:var(--muted)">6. Critical Hit Damage</div>
+      <div style="font-size:11px;color:var(--muted)">7. Hp Recovery</div>
+      <div style="font-size:11px;color:var(--muted)">8. Reflecting Damage Rate</div>
+      <div style="font-size:11px;color:var(--muted)">9. Reflecting Damage</div>
+      <div style="font-size:11px;color:var(--muted)">10. Talisman Damage</div>
+      <div style="font-size:11px;color:var(--muted)">11. Skill Damage</div>
+      <div style="font-size:11px;color:var(--muted)">12. Boss Dmg Reduction</div>
+      <div style="font-size:11px;color:var(--muted)">13. Damage To Boss</div>
+      <div style="font-size:11px;color:var(--muted)">14. Attack Speed</div>
+      <div style="font-size:11px;color:var(--muted)">15. Ore Drop Rate</div>
+      <div style="font-size:11px;color:var(--muted)">16. Exp Gain Rate</div>
+      <div style="font-size:11px;color:var(--muted)">17. Gold Drop Rate</div>
+      <div style="font-size:11px;color:var(--muted)">18. Extra Gold Drop</div>
+      <div style="font-size:11px;color:var(--muted)">19. Extra Exp Drop</div>
+    </div>
+  </div>
+
+  <!-- Lock Cost Table -->
+  <div class="card">
+    <div class="card-tag">// Cost Table</div>
+    <div class="card-title">Reroll Cost Reference</div>
+    <div class="divider"></div>
+    <div class="compare-table-wrap">
+      <table class="compare-table">
+        <thead><tr><th>Locked Slots</th><th>WC Cost</th></tr></thead>
+        <tbody>
+          <tr><td>0 locked</td><td>0 WC</td></tr>
+          <tr><td>1 locked</td><td>10 WC</td></tr>
+          <tr><td>2 locked</td><td>20 WC</td></tr>
+          <tr><td>3 locked</td><td>40 WC</td></tr>
+          <tr><td>4 locked</td><td>80 WC</td></tr>
+          <tr><td>5 locked</td><td>100 WC</td></tr>
+          <tr><td>6 locked</td><td>120 WC</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:10px;font-size:11px;color:var(--muted);line-height:1.8">
+      Trash Wing cost: Scarce=1 · Epic=2 · Legendary=3 · Immortal=4 · Mythic=5 · Eternal=6 · Celestial=7 · Primordial=8 · Transcendent=9
+    </div>
+  </div>
+
+  <!-- Setup -->
+  <div class="card">
+    <div class="card-tag">// Setup</div>
+    <div class="card-title">Reroll Simulator</div>
+    <div class="divider"></div>
+
+    <div class="world-grid">
+      <div class="field">
+        <label>Wing Rarity</label>
+        <select id="rr-rarity">
+          <option value="0">Scarce (1 slot)</option>
+          <option value="1">Epic (2 slots)</option>
+          <option value="2">Legendary (3 slots)</option>
+          <option value="3">Immortal (4 slots)</option>
+          <option value="4">Mythic (5 slots)</option>
+          <option value="5">Eternal (6 slots)</option>
+          <option value="6">Celestial (7 slots)</option>
+          <option value="7">Primordial (8 slots)</option>
+          <option value="8">Transcendent (9 slots)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>WC Available</label>
+        <input type="number" id="rr-wc" value="1000" min="0">
+      </div>
+    </div>
+    <div class="field">
+      <label>Trash Wings Available</label>
+      <input type="number" id="rr-trash" value="100" min="0">
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" id="rr-init-btn">▶ Start / Reset</button>
+    </div>
+  </div>
+
+  <!-- Wing Slots -->
+  <div class="card" id="rr-slots-card" style="display:none">
+    <div class="card-tag">// Wing Slots</div>
+    <div class="card-title">Current Attributes</div>
+    <div class="card-desc" style="margin-bottom:0">Slots 1-3 are fixed · Lock desired slots before rerolling</div>
+    <div class="divider"></div>
+
+    <!-- Fixed slots 1-3 -->
+    <div style="margin-bottom:10px">
+      <div class="result-label">Fixed Slots (Cannot Reroll)</div>
+      <div id="rr-fixed-slots" style="display:flex;flex-direction:column;gap:6px"></div>
+    </div>
+
+    <!-- Rerollable slots -->
+    <div>
+      <div class="result-label">Rerollable Slots</div>
+      <div id="rr-slots" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Cost display -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding:10px 14px;background:rgba(0,200,255,0.05);border:1px solid var(--border);border-radius:8px">
+      <div>
+        <div style="font-size:10px;color:var(--muted);letter-spacing:1px">REROLL COST</div>
+        <div style="font-family:'Orbitron',monospace;font-size:15px;color:var(--accent)" id="rr-cost-display">0 WC + 1 Trash</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:10px;color:var(--muted);letter-spacing:1px">REMAINING</div>
+        <div style="font-family:'Orbitron',monospace;font-size:13px;color:var(--text)">
+          <span id="rr-wc-left">—</span> WC · <span id="rr-trash-left">—</span> Trash
+        </div>
+      </div>
+    </div>
+    
+    
+   <!-- Control-->
+<div class="divider"></div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+  <div class="result-label" style="margin:0">Auto Target</div>
+  <button onclick="document.getElementById('rr-targets-wrap').classList.toggle('hidden')" 
+    style="font-size:10px;color:var(--muted);background:none;border:none;cursor:pointer;letter-spacing:1px">
+    SHOW/HIDE
+  </button>
+</div>
+<div id="rr-targets-wrap" class="hidden">
+  <div id="rr-targets" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px"></div>
+</div>
+<div class="btn-row" style="flex-wrap:wrap;gap:8px">
+  <button class="btn btn-primary" id="rr-roll-btn">🎲 Reroll</button>
+  <button class="btn" style="background:rgba(0,200,255,0.1);color:var(--accent);border:1px solid var(--accent)" id="rr-auto-btn">⏩ Auto Run</button>
+  <button class="btn" style="background:rgba(240,192,64,0.1);color:var(--gold);border:1px solid var(--gold)" id="rr-autolock-btn">🔒 Auto Lock</button>
+</div>
+
+    <!-- Log -->
+    <div style="margin-top:12px">
+      <div class="result-label">Roll Log</div>
+      <div id="rr-log" style="
+        max-height:140px;overflow-y:auto;
+        background:rgba(0,0,0,0.3);
+        border:1px solid var(--border);
+        border-radius:8px;padding:10px;
+        font-size:11px;line-height:1.9;
+        font-family:'Orbitron',monospace;
+        color:var(--muted);
+      "></div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="card" id="rr-stats-card" style="display:none">
+    <div class="card-tag">// Statistics</div>
+    <div class="card-title">Session Stats</div>
+    <div class="divider"></div>
+    <div class="results-grid">
+      <div class="result-stat"><div class="result-stat-label">Total Rerolls</div><div class="result-stat-val" id="rr-stat-rolls">0</div></div>
+      <div class="result-stat"><div class="result-stat-label">WC Spent</div><div class="result-stat-val" id="rr-stat-wc">0</div></div>
+      <div class="result-stat"><div class="result-stat-label">Trash Spent</div><div class="result-stat-val" id="rr-stat-trash">0</div></div>
+      <div class="result-stat"><div class="result-stat-label">WC Left</div><div class="result-stat-val" style="color:var(--gold)" id="rr-stat-wcleft">0</div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== ABSORB ANALYSIS PAGE ===== -->
+<div class="page" id="page-absorb">
+
+  <div class="card">
+    <div class="card-tag">// Setup</div>
+    <div class="card-title">Absorb Analysis</div>
+    <div class="card-desc">1p = Attack 215 · HP 20,000 · Crit 0.01% · Skill 0.002% · Talisman 0.001%</div>
+    <div class="divider"></div>
+
+    <!-- HP -->
+    <div class="result-label">HP</div>
+    <div class="world-grid" style="margin-bottom:14px">
+      <div class="field">
+        <label>Current</label>
+        <input type="text" id="ab-hp-cur" placeholder="e.g. 2870B">
+      </div>
+      <div class="field">
+        <label>Max</label>
+        <input type="text" id="ab-hp-max" placeholder="e.g. 4040B">
+      </div>
+    </div>
+
+    <!-- Attack -->
+    <div class="result-label">Attack</div>
+    <div class="world-grid" style="margin-bottom:14px">
+      <div class="field">
+        <label>Current</label>
+        <input type="text" id="ab-atk-cur" placeholder="e.g. 2970M">
+      </div>
+      <div class="field">
+        <label>Max</label>
+        <input type="text" id="ab-atk-max" placeholder="e.g. 4171M">
+      </div>
+    </div>
+
+    <!-- Crit -->
+    <div class="result-label">Critical Hit Damage (%)</div>
+    <div class="world-grid" style="margin-bottom:14px">
+      <div class="field">
+        <label>Current</label>
+        <input type="number" id="ab-crit-cur" placeholder="82415" step="0.01">
+      </div>
+      <div class="field">
+        <label>Max</label>
+        <input type="number" id="ab-crit-max" placeholder="82415" step="0.01">
+      </div>
+    </div>
+
+    <!-- Skill -->
+    <div class="result-label">Skill Damage (%)</div>
+    <div class="world-grid" style="margin-bottom:14px">
+      <div class="field">
+        <label>Current</label>
+        <input type="number" id="ab-skill-cur" placeholder="16483" step="0.001">
+      </div>
+      <div class="field">
+        <label>Max</label>
+        <input type="number" id="ab-skill-max" placeholder="16483" step="0.001">
+      </div>
+    </div>
+
+    <!-- Talisman -->
+    <div class="result-label">Talisman Damage (%)</div>
+    <div class="world-grid" style="margin-bottom:14px">
+      <div class="field">
+        <label>Current</label>
+        <input type="number" id="ab-tal-cur" placeholder="8241.5" step="0.001">
+      </div>
+      <div class="field">
+        <label>Max</label>
+        <input type="number" id="ab-tal-max" placeholder="8241.5" step="0.001">
+      </div>
+    </div>
+
+    <button class="btn btn-primary" id="ab-calc-btn" style="width:100%">📊 Analyze</button>
+  </div>
+
+  <!-- Results card — styled like in-game -->
+  <div class="card" id="ab-result-card" style="display:none">
+    <div class="card-tag">// Result</div>
+    <div class="card-title">Points Needed to Max</div>
+    <div class="divider"></div>
+    <div id="ab-stat-list" style="display:flex;flex-direction:column;gap:10px"></div>
+    <div class="divider"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:rgba(0,200,255,0.06);border:1px solid var(--border);border-radius:10px">
+      <div style="font-size:13px;color:var(--muted);font-weight:600;letter-spacing:1px">TOTAL POINTS NEEDED</div>
+      <div style="font-family:'Orbitron',monospace;font-size:20px;font-weight:700;color:var(--gold)" id="ab-total-p">0p</div>
+    </div>
+    <div style="margin-top:10px;font-size:10px;color:var(--muted);text-align:center;letter-spacing:1px">
+      Higher levels allow for the absorption of more elixirs
+    </div>
+  </div>
+
+</div>
+
+</main>
+
+<script>
+
+// ===== WING LOGIC =====
+const WING_LEVEL_MULT = 0.0000555555555555556;
+
+const wingRarities = {
+  scarce:       { value: 6,  name: 'Scarce',       badge: 'rb-scare' },
+  epic:         { value: 7,  name: 'Epic',         badge: 'rb-epic' },
+  legendary:    { value: 8,  name: 'Legendary',    badge: 'rb-legendary' },
+  immortal:     { value: 9,  name: 'Immortal',     badge: 'rb-immortal' },
+  mythical:     { value: 10, name: 'Mythical',     badge: 'rb-mythical' },
+  eternal:      { value: 11, name: 'Eternal',      badge: 'rb-eternal' },
+  celestial:    { value: 12, name: 'Celestial',    badge: 'rb-celestial' },
+
+  primordial:   { value: 13, name: 'Primordial',   badge: 'rb-primordial' },
+  transcendent: { value: 14, name: 'Transcendent', badge: 'rb-transcendent' },
+};
+
+function wingBase(level, rarityVal) {
+  if (rarityVal <= 5) return 0;
+  const t1 = 0.05 + (level - 1) * WING_LEVEL_MULT;
+  const t2 = 1 + (rarityVal - 5) * 0.1;
+  const t3 = 6.25;
+  const t4 = (rarityVal - 5) / 7;
+  return t1 * t2 * t3 * t4;
+}
+
+function populateWingSelects() {
+  ['coeff-rarity', 'atbm-rarity'].forEach(id => {
+    const sel = document.getElementById(id);
+    sel.innerHTML = '';
+    for (const [key, r] of Object.entries(wingRarities)) {
+      const o = document.createElement('option');
+      o.value = key; o.textContent = r.name;
+      sel.appendChild(o);
+    }
+  });
+}
+
+function updateBadge(badgeId, rarityKey) {
+  const el = document.getElementById(badgeId);
+  const r = wingRarities[rarityKey];
+  el.className = `rarity-badge ${r.badge}`;
+  el.textContent = r.name;
+}
+
+function calcCoefficient() {
+  const pct    = parseFloat(document.getElementById('coeff-pct').value) || 0;
+  const level  = parseInt(document.getElementById('coeff-level').value) || 1;
+  const rKey   = document.getElementById('coeff-rarity').value;
+  const rVal   = wingRarities[rKey].value;
+  const base   = wingBase(level, rVal);
+  const coeff  = base !== 0 ? (pct / 100) / base : 0;
+  const el = document.getElementById('coeff-result');
+  el.textContent = coeff.toFixed(5);
+  el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  updateBadge('coeff-badge', rKey);
+}
+
+function calcATBM() {
+  const coeff  = parseFloat(document.getElementById('atbm-coeff').value) || 0;
+  const level  = parseInt(document.getElementById('atbm-level').value) || 1;
+  const rKey   = document.getElementById('atbm-rarity').value;
+  const rVal   = wingRarities[rKey].value;
+  const base   = wingBase(level, rVal);
+  const atbm   = coeff * base * 100;
+  const el = document.getElementById('atbm-result');
+  el.textContent = atbm.toFixed(3) + '%';
+  el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  updateBadge('atbm-badge', rKey);
+}
+
+['coeff-pct','coeff-level','coeff-rarity'].forEach(id =>
+  document.getElementById(id).addEventListener('input', calcCoefficient));
+['atbm-coeff','atbm-level','atbm-rarity'].forEach(id =>
+  document.getElementById(id).addEventListener('input', calcATBM));
+
+// ===== ELIXIR LOGIC =====
+const elixirRarities = [
+  { id:'common',    name:'Common',    val:1,  checked:true },
+  { id:'good',      name:'Good',      val:2,  checked:true },
+  { id:'sturdy',    name:'Sturdy',    val:3,  checked:false },
+  { id:'rare',      name:'Rare',      val:4,  checked:false },
+  { id:'perfect',   name:'Perfect',   val:5,  checked:false },
+  { id:'scarce',    name:'Scarce',    val:6,  checked:false },
+  { id:'epic',      name:'Epic',      val:8,  checked:false },
+  { id:'legendary', name:'Legendary', val:10, checked:false },
+  { id:'immortal',  name:'Immortal',  val:14, checked:false },
+  { id:'myth',      name:'Myth',      val:20, checked:false },
+  { id:'eternal',   name:'Eternal',   val:28, checked:false },
+  { id:'celestial',   name:'Celestial',   val:36, checked:false },
+];
+
+const elixirColors = {
+  common:'#a0a0a0', good:'#5cbf5c', sturdy:'#00dddd',
+  rare:'#32cd32', perfect:'#3090ff', scarce:'#c080d0',
+  epic:'#ff8c00', legendary:'#9932cc', immortal:'#ff1493',
+  myth:'#ff4500', eternal:'#f0c040', celestial: '#ff4d4d',
+};
+
+const elixirStats = [
+  { id:'attack',   name:'Attack',             pct:false },
+  { id:'crit',     name:'Crit Hit Dmg',       pct:true, dec:2 },
+  { id:'talisman', name:'Talisman Dmg',       pct:true, dec:3 },
+  { id:'hp',       name:'HP',                 pct:false },
+  { id:'skill',    name:'Skill Dmg',          pct:true, dec:3 },
+];
+
+const elixirAbsorb = {
+  common:    { attack:215,  crit:0.01, talisman:0.001, hp:20000,  skill:0.002 },
+  good:      { attack:430,  crit:0.02, talisman:0.002, hp:40000,  skill:0.004 },
+  sturdy:    { attack:615,  crit:0.03, talisman:0.003, hp:60000,  skill:0.006 },
+  rare:      { attack:860,  crit:0.04, talisman:0.004, hp:80000,  skill:0.008 },
+  perfect:   { attack:1075,  crit:0.05, talisman:0.005, hp:100000,  skill:0.010 },
+  scarce:    { attack:1290,  crit:0.06, talisman:0.006, hp:120000,  skill:0.012 },
+  epic:      { attack:1720, crit:0.08, talisman:0.008, hp:160000, skill:0.016 },
+  legendary: { attack:2150, crit:0.10, talisman:0.010, hp:200000, skill:0.020 },
+  immortal:  { attack:3010, crit:0.14, talisman:0.014, hp:280000, skill:0.028 },
+  myth:      { attack:4300, crit:0.20, talisman:0.020, hp:400000, skill:0.040 },
+  eternal:   { attack:6020, crit:0.28, talisman:0.028, hp:560000, skill:0.056 },
+  celestial: { attack:7740, crit:0.36, talisman:0.036, hp:720000, skill:0.072 },
+};
+
+function fmtNum(n) {
+  if (n >= 1e9) return (n/1e9).toFixed(1).replace(/\.0$/,'')+'B';
+  if (n >= 1e6) return (n/1e6).toFixed(1).replace(/\.0$/,'')+'M';
+  if (n >= 1e3) return (n/1e3).toFixed(1).replace(/\.0$/,'')+'K';
+  return n.toLocaleString();
+}
+
+function initElixir() {
+  const cb = document.getElementById('elixir-checkboxes');
+  elixirRarities.forEach(r => {
+    const label = document.createElement('label');
+    label.className = 'rar-check' + (r.checked ? ' checked' : '');
+    label.style.borderColor = r.checked ? elixirColors[r.id] : '';
+    label.innerHTML = `<input type="checkbox" id="eck-${r.id}" ${r.checked?'checked':''}><span>${r.name}</span>`;
+    label.querySelector('input').addEventListener('change', e => {
+      label.classList.toggle('checked', e.target.checked);
+      label.style.borderColor = e.target.checked ? elixirColors[r.id] : '';
+      renderElixirSections();
+      calcElixir();
+    });
+    cb.appendChild(label);
+  });
+  renderElixirSections();
+  calcElixir();
+}
+
+function renderElixirSections() {
+  const container = document.getElementById('elixir-sections');
+  container.innerHTML = '';
+  elixirRarities.forEach(r => {
+    const checked = document.getElementById(`eck-${r.id}`)?.checked;
+    if (!checked) return;
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.animationDelay = '0.05s';
+    card.innerHTML = `
+      <div class="elixir-section-header" style="background:${elixirColors[r.id]}22; color:${elixirColors[r.id]}; border:1px solid ${elixirColors[r.id]}44">
+        ${r.name} <span style="font-size:10px;opacity:0.7;margin-left:4px;">(×${r.val} pts)</span>
+      </div>
+      <div class="elixir-inputs">
+        ${elixirStats.map(s => `
+          <div class="elixir-input-group">
+            <label>${s.name}</label>
+            <input type="number" id="eq-${r.id}-${s.id}" value="0" min="0">
+          </div>
+        `).join('')}
+      </div>
+    `;
+    container.appendChild(card);
+    elixirStats.forEach(s => {
+      document.getElementById(`eq-${r.id}-${s.id}`).addEventListener('input', calcElixir);
+    });
+  });
+}
+
+function calcElixir() {
+  const pts = {}; const abs = {};
+  elixirStats.forEach(s => { pts[s.id] = 0; abs[s.id] = 0; });
+
+  elixirRarities.forEach(r => {
+    if (!document.getElementById(`eck-${r.id}`)?.checked) return;
+    elixirStats.forEach(s => {
+      const qty = parseInt(document.getElementById(`eq-${r.id}-${s.id}`)?.value) || 0;
+      pts[s.id] += qty * r.val;
+      abs[s.id] += qty * elixirAbsorb[r.id][s.id];
+    });
+  });
+
+  // Points
+  const ptContainer = document.getElementById('elixir-points-totals');
+  ptContainer.innerHTML = elixirStats.map(s => `
+    <div class="total-item">
+      <div class="total-item-label">${s.name}</div>
+      <div class="total-item-val">${pts[s.id].toLocaleString()}</div>
+    </div>
+  `).join('');
+
+  // Absorb
+  const abContainer = document.getElementById('elixir-absorb-totals');
+  abContainer.innerHTML = elixirStats.map(s => {
+    let val;
+    if (s.pct) val = abs[s.id].toFixed(s.dec) + '%';
+    else val = fmtNum(abs[s.id]);
+    return `
+      <div class="total-item">
+        <div class="total-item-label">${s.name}</div>
+        <div class="total-item-val">${val}</div>
+      </div>
+    `;
+  }).join('');
+}
+//World
+const worldDifficulties = {
+  Easy:   Array.from({length:20}, (_,i) => ({ id: i+1,   name: `World Easy ${i+1}` })),
+  Normal: Array.from({length:20}, (_,i) => ({ id: i+21,  name: `World Normal ${i+1}` })),
+  Hard:   Array.from({length:20}, (_,i) => ({ id: i+41,  name: `World Hard ${i+1}` })),
+  Expert: Array.from({length:20}, (_,i) => ({ id: i+61,  name: `World Expert ${i+1}` })),
+  Master: Array.from({length:20}, (_,i) => ({ id: i+81,  name: `World Master ${i+1}` })),
+  Hell: Array.from({length:20}, (_,i) => ({ id: i+101,  name: `World Hell ${i+1}` })),
+  Legend: Array.from({length:10}, (_,i) => ({ id: i+121,  name: `World Legend ${i+1}` })),
+};
+
+const worldStats = {
+  1:{xp:500,ore:1,coins:1500},2:{xp:500,ore:1,coins:1500},3:{xp:500,ore:1,coins:1500},4:{xp:500,ore:2,coins:1500},5:{xp:500,ore:2,coins:1500},
+  6:{xp:550,ore:2,coins:1500},7:{xp:550,ore:2,coins:2000},8:{xp:550,ore:3,coins:2600},9:{xp:600,ore:3,coins:3200},10:{xp:600,ore:3,coins:3200},
+  11:{xp:700,ore:3,coins:3500},12:{xp:1000,ore:3,coins:3500},13:{xp:1000,ore:4,coins:3500},14:{xp:1000,ore:4,coins:3800},15:{xp:1000,ore:4,coins:4000},
+  16:{xp:1000,ore:4,coins:4100},17:{xp:1500,ore:4,coins:4200},18:{xp:1500,ore:5,coins:4600},19:{xp:2000,ore:5,coins:5000},20:{xp:2000,ore:5,coins:7600},
+  21:{xp:2500,ore:5,coins:8600},22:{xp:2500,ore:5,coins:9300},23:{xp:3000,ore:5,coins:10000},24:{xp:3000,ore:6,coins:10600},25:{xp:3500,ore:6,coins:11300},
+  26:{xp:3500,ore:6,coins:12000},27:{xp:3500,ore:6,coins:13300},28:{xp:4500,ore:6,coins:14000},29:{xp:4500,ore:7,coins:14600},30:{xp:5000,ore:7,coins:16000},
+  31:{xp:5000,ore:7,coins:16600},32:{xp:5000,ore:7,coins:17300},33:{xp:5500,ore:7,coins:18000},34:{xp:5500,ore:7,coins:18600},35:{xp:6000,ore:8,coins:19300},
+  36:{xp:6500,ore:8,coins:20600},37:{xp:6500,ore:8,coins:20600},38:{xp:6500,ore:8,coins:22600},39:{xp:7000,ore:9,coins:22600},40:{xp:7500,ore:9,coins:26000},
+  41:{xp:8500,ore:9,coins:50000},42:{xp:8500,ore:9,coins:52600},43:{xp:9500,ore:9,coins:56000},44:{xp:9500,ore:9,coins:57300},45:{xp:10000,ore:10,coins:59300},
+  46:{xp:10000,ore:10,coins:61300},47:{xp:10000,ore:10,coins:63300},48:{xp:11000,ore:10,coins:64600},49:{xp:11000,ore:10,coins:66600},50:{xp:11000,ore:11,coins:67600},
+  51:{xp:12000,ore:11,coins:70600},52:{xp:12000,ore:11,coins:72600},53:{xp:12000,ore:12,coins:74600},54:{xp:13000,ore:11,coins:76600},55:{xp:13000,ore:11,coins:78000},
+  56:{xp:16500,ore:12,coins:79300},57:{xp:18500,ore:12,coins:81300},58:{xp:20500,ore:12,coins:82000},59:{xp:25000,ore:12,coins:84600},60:{xp:27500,ore:12,coins:86600},
+  61:{xp:31500,ore:13,coins:100400},62:{xp:32300,ore:13,coins:101000},63:{xp:32800,ore:13,coins:101200},64:{xp:33200,ore:13,coins:101600},65:{xp:33700,ore:13,coins:103000},
+  66:{xp:34200,ore:13,coins:104900},67:{xp:35000,ore:14,coins:106500},68:{xp:35500,ore:14,coins:108700},69:{xp:35900,ore:14,coins:110300},70:{xp:36900,ore:14,coins:112300},
+  71:{xp:41800,ore:14,coins:125300},72:{xp:42300,ore:15,coins:127500},73:{xp:43100,ore:15,coins:129900},74:{xp:44100,ore:15,coins:132000},75:{xp:44400,ore:15,coins:134400},
+  76:{xp:46000,ore:15,coins:137100},77:{xp:46300,ore:16,coins:139700},78:{xp:47200,ore:16,coins:143700},79:{xp:48100,ore:16,coins:145200},80:{xp:49400,ore:16,coins:148300},
+  81:{xp:50000,ore:16,coins:152800},82:{xp:52000,ore:16,coins:154800},83:{xp:52800,ore:16,coins:157200},84:{xp:53600,ore:16,coins:160400},85:{xp:54400,ore:16,coins:163600},
+  86:{xp:55600,ore:16,coins:167600},87:{xp:57200,ore:16,coins:171200},88:{xp:58400,ore:16,coins:174400},89:{xp:59200,ore:16,coins:180600},90:{xp:60000,ore:17,coins:181600},
+  91:{xp:60800,ore:18,coins:183080},92:{xp:62800,ore:19,coins:187080},93:{xp:64800,ore:19,coins:191080},94:{xp:65000,ore:19,coins:195080},95:{xp:66800,ore:19,coins:201080},
+  96:{xp:68800,ore:19,coins:203080},97:{xp:70800,ore:19,coins:205480},98:{xp:73000,ore:19,coins:211080},99:{xp:76560,ore:19,coins:215080},100:{xp:78800,ore:19,coins:219080},
+  101:{xp:76000,ore:19,coins:224000},102:{xp:74000,ore:19,coins:226000},103:{xp:78000,ore:19,coins:230000},104:{xp:78000,ore:19,coins:232000},105:{xp:78000,ore:19,coins:238000},
+  106:{xp:80000,ore:19,coins:240000},107:{xp:82000,ore:19,coins:244000},108:{xp:82000,ore:19,coins:246000},109:{xp:84000,ore:19,coins:252000},110:{xp:86000,ore:19,coins:254000},
+  111:{xp:86000,ore:19,coins:258000},112:{xp:86000,ore:19,coins:262000},113:{xp:88000,ore:19,coins:264000},114:{xp:90000,ore:19,coins:268000},115:{xp:90000,ore:19,coins:274000},
+  116:{xp:92000,ore:19,coins:274000},117:{xp:92000,ore:19,coins:280000},118:{xp:93120,ore:19,coins:282000},119:{xp:94190,ore:19,coins:288000},120:{xp:96000,ore:19,coins:290000},
+  121:{xp:96000,ore:19,coins:292000},122:{xp:96000,ore:19,coins:298000},123:{xp:98000,ore:19,coins:300000},124:{xp:100000,ore:19,coins:304000},125:{xp:100000,ore:19,coins:308000},
+  126:{xp:100000,ore:19,coins:312000},127:{xp:102000,ore:19,coins:314000},128:{xp:104000,ore:19,coins:318000},129:{xp:104000,ore:19,coins:322000},130:{xp:106000,ore:19,coins:326000},
+};
+
+let comparisonData = [];
+
+function initWorld() {
+  const diff = document.getElementById('difficulty-select');
+  Object.keys(worldDifficulties).forEach(d => {
+    const o = document.createElement('option'); o.value=d; o.textContent=d; diff.appendChild(o);
+  });
+  diff.addEventListener('change', populateWorldOptions);
+  populateWorldOptions();
+
+  const inputs = ['clear-time','gold-drop','ore-drop','exp-gain','extra-gold','extra-exp'];
+  inputs.forEach(id => document.getElementById(id)?.addEventListener('input', calcWorld));
+  document.getElementById('world-select').addEventListener('change', calcWorld);
+  document.getElementById('compare-btn').addEventListener('click', addCompare);
+  document.getElementById('clear-compare-btn').addEventListener('click', () => { comparisonData=[]; renderCompare(); });
+  calcWorld();
+}
+
+function populateWorldOptions() {
+  const diff = document.getElementById('difficulty-select').value;
+  const ws = document.getElementById('world-select');
+  ws.innerHTML = '';
+  (worldDifficulties[diff] || []).forEach(w => {
+    const o = document.createElement('option');
+    o.value = w.id;
+    o.textContent = w.name;
+    ws.appendChild(o);
+  });
+  calcWorld();
+}
+
+function calcWorld() {
+  const worldId   = parseInt(document.getElementById('world-select').value);
+  const stats     = worldStats[worldId];
+  if (!stats) return;
+
+  const clearTime   = parseFloat(document.getElementById('clear-time').value) || 0;
+  const expGainRate = parseFloat(document.getElementById('exp-gain').value) / 100 || 1;
+  const oreDropRate = parseFloat(document.getElementById('ore-drop').value) / 100 || 1;
+  const goldDropRate= parseFloat(document.getElementById('gold-drop').value) / 100 || 1;
+  const extraExp    = parseFloat(document.getElementById('extra-exp').value) || 0;
+  const extraGold   = parseFloat(document.getElementById('extra-gold').value) || 0;
+
+  const timeFactor  = clearTime > 0 ? 3600 / (clearTime + 5) : 0;
+  
+  const xph   = timeFactor * (stats.xp * expGainRate + (extraExp * 460));
+  const oreh  = timeFactor * stats.ore * oreDropRate;
+  const goldh = timeFactor * (stats.coins * goldDropRate + (extraGold * 460));
+  const clears= timeFactor;
+
+  // show base stats
+  document.getElementById('base-exp').textContent   = stats.xp.toLocaleString();
+  document.getElementById('base-ore').textContent   = stats.ore.toLocaleString();
+  document.getElementById('base-gold').textContent  = stats.coins.toLocaleString();
+
+  document.getElementById('result-xp').textContent    = Math.round(xph).toLocaleString();
+  document.getElementById('result-ore').textContent   = Math.round(oreh).toLocaleString();
+  document.getElementById('result-gold').textContent  = Math.round(goldh).toLocaleString();
+  document.getElementById('result-clears').textContent= clears.toFixed(1);
+}
+
+function addCompare() {
+  const ws = document.getElementById('world-select');
+  const name = ws.options[ws.selectedIndex]?.textContent || 'Custom';
+  comparisonData.push({
+    name,
+    xp:     document.getElementById('result-xp').textContent,
+    ore:    document.getElementById('result-ore').textContent,
+    gold:   document.getElementById('result-gold').textContent,
+    clears: document.getElementById('result-clears').textContent,
+    time:   document.getElementById('clear-time').value,
+  });
+  renderCompare();
+}
+
+function renderCompare() {
+  const c = document.getElementById('compare-container');
+  if (!comparisonData.length) { c.innerHTML='<p style="color:var(--muted);font-size:12px;">No worlds added yet.</p>'; return; }
+  c.innerHTML = `
+    <div class="compare-table-wrap">
+      <table class="compare-table">
+        <thead><tr><th>World</th><th>Exp/h</th><th>Ore/h</th><th>Gold/h</th><th>Clears/h</th><th>Time(s)</th></tr></thead>
+        <tbody>${comparisonData.map(d=>`
+          <tr>
+            <td>${d.name}</td>
+            <td>${d.xp}</td>
+            <td>${d.ore}</td>
+            <td>${d.gold}</td>
+            <td>${d.clears}</td>
+            <td>${d.time}</td>
+          </tr>
+        `).join('')}</tbody>
+      </table>
+    </div>
+  `;
+}
+// ===== WING SIMULATOR =====
+const simStages = [
+  { from:'Scarce',     to:'Epic',         wc:1,  base:0.003   },
+  { from:'Epic',       to:'Legendary',    wc:2,  base:0.002   },
+  { from:'Legendary',  to:'Immortal',     wc:4,  base:0.001   },
+  { from:'Immortal',   to:'Mythic',       wc:6,  base:0.0004  },
+  { from:'Mythic',     to:'Eternal',      wc:8,  base:0.0002  },
+  { from:'Eternal',    to:'Celestial',    wc:10, base:0.00001 },
+  { from:'Celestial',  to:'Primordial',   wc:10, base:0.000002},
+  { from:'Primordial', to:'Transcendent', wc:10, base:0.000001},
+];
+
+let simState = null;
+let simAutoTimer = null;
+
+function simInit() {
+  const startIdx = parseInt(document.getElementById('sim-start-rarity').value);
+  const targetIdx= parseInt(document.getElementById('sim-target-rarity').value);
+  const wc       = parseInt(document.getElementById('sim-wc').value) || 0;
+
+  if (targetIdx <= startIdx) {
+    alert('Target must be higher than Starting rarity!'); return;
+  }
+
+  simState = {
+    stageIdx: startIdx,
+    targetIdx,
+    wcLeft: wc,
+    wcTotal: wc,
+    currentRate: simStages[startIdx].base,
+    attempts: 0,
+    stageStats: {},  // { stageIdx: { wc: 0, attempts: 0 } }
+    done: false,
+    outOfWC: false,
+  };
+
+  // init stageStats for each stage
+  for (let i = startIdx; i < targetIdx; i++) {
+    simState.stageStats[i] = { wc: 0, attempts: 0 };
+  }
+
+  document.getElementById('sim-status-card').style.display = '';
+  document.getElementById('sim-log').innerHTML = '';
+  simRenderStatus();
+  renderSimStageStats();
+}
+
+function simAttempt() {
+  if (!simState || simState.done || simState.outOfWC) return;
+
+  const stage = simStages[simState.stageIdx];
+
+  // Check WC
+  if (simState.wcLeft < stage.wc) {
+    simState.outOfWC = true;
+    simLog(`❌ Out of WC! Stopped at <b style="color:var(--accent2)">${stage.from}</b>`, 'fail');
+    simRenderStatus();
+    renderSimStageStats();
+    stopAuto();
+    return;
+  }
+
+  // Deduct WC
+  simState.wcLeft -= stage.wc;
+  simState.attempts++;
+  simState.stageStats[simState.stageIdx].wc += stage.wc;
+  simState.stageStats[simState.stageIdx].attempts++;
+
+  // Roll
+  const roll = Math.random();
+  if (roll < simState.currentRate) {
+    // SUCCESS
+    simLog(`✅ <b style="color:var(--green)">${stage.from} → ${stage.to}</b> (rate: ${(simState.currentRate*100).toFixed(4)}%)`, 'success');
+    simState.stageIdx++;
+    if (simState.stageIdx >= simState.targetIdx) {
+      simState.done = true;
+      simLog(`🎉 <b style="color:var(--gold)">Reached ${simStages[simState.targetIdx-1].to}! Done!</b>`, 'done');
+      stopAuto();
+    } else {
+      simState.currentRate = simStages[simState.stageIdx].base;
+    }
+  } else {
+    // FAIL — pity
+    simState.currentRate += stage.base;
+    simLog(`💢 Failed. Rate now <b style="color:var(--accent2)">${(simState.currentRate*100).toFixed(4)}%</b>`, 'fail');
+  }
+
+  simRenderStatus();
+  renderSimStageStats();
+}
+
+function simLog(msg, type) {
+  const log = document.getElementById('sim-log');
+  const line = document.createElement('div');
+  line.innerHTML = `<span style="color:var(--muted)">#${simState.attempts}</span> ${msg}`;
+  log.appendChild(line);
+  log.scrollTop = log.scrollHeight;
+}
+
+function simRenderStatus() {
+  if (!simState) return;
+  const stage = simStages[Math.min(simState.stageIdx, simStages.length-1)];
+  document.getElementById('sim-cur-rarity').textContent = simState.done ? simStages[simState.targetIdx-1].to : stage.from;
+  document.getElementById('sim-wc-left').textContent    = simState.wcLeft.toLocaleString();
+  document.getElementById('sim-cur-rate').textContent   = simState.done ? '—' : (simState.currentRate*100).toFixed(4)+'%';
+  document.getElementById('sim-attempts').textContent   = simState.attempts.toLocaleString();
+}
+
+function renderSimStageStats() {
+  if (!simState) return;
+  const container = document.getElementById('sim-stage-stats');
+  const startIdx = parseInt(document.getElementById('sim-start-rarity').value);
+  const targetIdx= parseInt(document.getElementById('sim-target-rarity').value);
+
+  let html = '<div class="compare-table-wrap"><table class="compare-table"><thead><tr><th>Stage</th><th>Click</th><th>WC Used</th></tr></thead><tbody>';
+  for (let i = startIdx; i < targetIdx; i++) {
+    const s = simState.stageStats[i] || { wc:0, attempts:0 };
+    const done = simState.stageIdx > i;
+    html += `<tr>
+      <td style="color:${done?'var(--green)':'var(--text)'}">${simStages[i].from} → ${simStages[i].to} ${done?'✅':''}</td>
+      <td>${s.attempts}</td>
+      <td>${s.wc}</td>
+    </tr>`;
+  }
+  const wcUsed = simState.wcTotal - simState.wcLeft;
+  html += `</tbody><tfoot><tr style="font-weight:bold">
+    <td style="color:var(--accent)">Total</td>
+    <td style="color:var(--accent)">${simState.attempts}</td>
+    <td style="color:var(--gold)">${wcUsed}</td>
+  </tr></tfoot></table></div>`;
+  container.innerHTML = html;
+}
+
+function stopAuto() {
+  if (simAutoTimer) { clearInterval(simAutoTimer); simAutoTimer = null; }
+  document.getElementById('sim-auto-btn').textContent = '⏩ Auto Run';
+}
+
+document.getElementById('sim-run-btn').addEventListener('click', () => { stopAuto(); simInit(); });
+document.getElementById('sim-reset-btn').addEventListener('click', () => {
+  stopAuto(); simState = null;
+  document.getElementById('sim-status-card').style.display = 'none';
+  document.getElementById('sim-stage-stats').innerHTML = '<p style="color:var(--muted);font-size:12px;">Run a simulation to see stats.</p>';
+  document.getElementById('sim-log').innerHTML = '';
+});
+document.getElementById('sim-step-btn').addEventListener('click', simAttempt);
+document.getElementById('sim-auto-btn').addEventListener('click', () => {
+  if (simAutoTimer) { stopAuto(); return; }
+  if (!simState || simState.done || simState.outOfWC) { simInit(); }
+  document.getElementById('sim-auto-btn').textContent = '⏹ Stop';
+  simAutoTimer = setInterval(() => {
+    simAttempt();
+    if (!simState || simState.done || simState.outOfWC) stopAuto();
+  }, 30);
+});
+// ===== REROLL SIMULATOR =====
+const ATTRIBUTES = [
+  'Hp Boost','Attack Boost','Dodge Rate','Ignore Dodge Rate',
+  'Critical Hit Rate','Critical Hit Damage','Hp Recovery',
+  'Reflecting Damage Rate','Reflecting Damage','Talisman Damage',
+  'Skill Damage','Boss Dmg Reduction','Damage To Boss','Attack Speed',
+  'Ore Drop Rate','Exp Gain Rate','Gold Drop Rate',
+  'Extra Gold Drop','Extra Exp Drop'
+];
+
+const LOCK_WC_COST = [0, 10, 20, 40, 80, 100, 120];
+const TRASH_COST_BY_RARITY = [1,2,3,4,5,6,7,8,9];
+const SLOTS_BY_RARITY = [1,2,3,4,5,6,7,8,9];
+
+const FIXED_ATTRS = ['Hp','Attack','Attack Boost Multiplier'];
+
+let rrState = null;
+let rrAutoTimer = null;
+
+function rrRandAttr(exclude = []) {
+  const pool = ATTRIBUTES.filter(a => !exclude.includes(a));
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function rrInitSlots(count) {
+  // Each slot gets a random unique attribute
+  const picked = [];
+  const all = [...ATTRIBUTES];
+  // fixed 3
+  const fixed = FIXED_ATTRS.slice();
+  // rerollable slots — must be unique and not overlap with fixed or each other
+  const rerollable = [];
+  const usedPool = [...fixed];
+  for (let i = 0; i < count; i++) {
+    let attr;
+    do { attr = ATTRIBUTES[Math.floor(Math.random() * ATTRIBUTES.length)]; }
+    while (usedPool.includes(attr));
+    usedPool.push(attr);
+    rerollable.push({ attr, locked: false });
+  }
+  return rerollable;
+}
+
+function rrInit() {
+  if (rrAutoTimer) { clearInterval(rrAutoTimer); rrAutoTimer = null; }
+
+  const rarityIdx  = parseInt(document.getElementById('rr-rarity').value);
+  const wcAvail    = parseInt(document.getElementById('rr-wc').value) || 0;
+  const trashAvail = parseInt(document.getElementById('rr-trash').value) || 0;
+  const slotCount  = SLOTS_BY_RARITY[rarityIdx];
+  const trashCost  = TRASH_COST_BY_RARITY[rarityIdx];
+
+  rrState = {
+    rarityIdx, slotCount, trashCost,
+    wcLeft: wcAvail, trashLeft: trashAvail,
+    wcSpent: 0, trashSpent: 0, rolls: 0,autoLock: false,
+    slots: rrInitSlots(slotCount),
+  };
+
+  document.getElementById('rr-slots-card').style.display = '';
+  document.getElementById('rr-stats-card').style.display = '';
+  document.getElementById('rr-log').innerHTML = '';
+  rrRenderSlots();
+  rrUpdateCost();
+  rrUpdateStats();
+  rrLog(`🎲 Initial attributes rolled — free!`);
+}
+
+function rrRenderSlots() {
+  if (!rrState) return;
+
+  // Fixed slots
+  const fixedContainer = document.getElementById('rr-fixed-slots');
+  fixedContainer.innerHTML = FIXED_ATTRS.map((a, i) => `
+    <div style="
+      display:flex;align-items:center;gap:10px;
+      padding:8px 12px;border-radius:8px;
+      background:rgba(255,255,255,0.02);
+      border:1px solid var(--border);
+      opacity:0.5;
+    ">
+      <span style="font-size:10px;color:var(--muted);font-family:'Orbitron',monospace;width:18px">${i+1}</span>
+      <span style="font-size:12px;color:var(--muted)">🔒 ${a}</span>
+    </div>
+  `).join('');
+
+  // Rerollable slots
+  const container = document.getElementById('rr-slots');
+  container.innerHTML = rrState.slots.map((slot, i) => `
+    <div style="
+      display:flex;align-items:center;gap:10px;
+      padding:10px 12px;border-radius:8px;
+      background:${slot.locked ? 'rgba(0,200,255,0.08)' : 'rgba(255,255,255,0.03)'};
+      border:1px solid ${slot.locked ? 'var(--accent)' : 'var(--border)'};
+      transition:all 0.2s;
+    " id="rr-slot-${i}">
+      <span style="font-size:10px;color:var(--muted);font-family:'Orbitron',monospace;width:18px">${i+4}</span>
+      <select id="rr-slot-sel-${i}" style="
+        flex:1;background:transparent;border:none;
+        color:${slot.locked ? 'var(--accent)' : 'var(--text)'};
+        font-size:12px;font-family:'Exo 2',sans-serif;
+        outline:none;cursor:pointer;padding:0;
+      " onchange="rrState.slots[${i}].attr=this.value">
+        ${ATTRIBUTES.map(a => `<option value="${a}" ${a===slot.attr?'selected':''}>${a}</option>`).join('')}
+      </select>
+      <button onclick="rrToggleLock(${i})" style="
+        padding:4px 10px;border-radius:6px;border:none;cursor:pointer;
+        font-size:10px;font-weight:600;letter-spacing:1px;
+        background:${slot.locked ? 'rgba(0,200,255,0.2)' : 'rgba(255,255,255,0.06)'};
+        color:${slot.locked ? 'var(--accent)' : 'var(--muted)'};
+        transition:all 0.15s;
+      ">${slot.locked ? '🔒 LOCK' : '🔓 LOCK'}</button>
+    </div>
+  `).join('');
+}
+
+function rrToggleLock(idx) {
+  if (!rrState) return;
+  const lockedCount = rrState.slots.filter(s => s.locked).length;
+  if (!rrState.slots[idx].locked && lockedCount >= 6) {
+    alert('Maximum 6 slots can be locked!'); return;
+  }
+  rrState.slots[idx].locked = !rrState.slots[idx].locked;
+  rrRenderSlots();
+  rrUpdateCost();
+}
+
+function rrGetCost() {
+  if (!rrState) return { wc: 0, trash: 0 };
+  const locked = rrState.slots.filter(s => s.locked).length;
+  return {
+    wc: LOCK_WC_COST[Math.min(locked, 6)],
+    trash: rrState.trashCost,
+  };
+}
+
+function rrUpdateCost() {
+  const { wc, trash } = rrGetCost();
+  document.getElementById('rr-cost-display').textContent = `${wc} WC + ${trash} Trash`;
+  document.getElementById('rr-wc-left').textContent = rrState?.wcLeft.toLocaleString() ?? '—';
+  document.getElementById('rr-trash-left').textContent = rrState?.trashLeft.toLocaleString() ?? '—';
+}
+
+function rrUpdateStats() {
+  if (!rrState) return;
+  document.getElementById('rr-stat-rolls').textContent   = rrState.rolls.toLocaleString();
+  document.getElementById('rr-stat-wc').textContent      = rrState.wcSpent.toLocaleString();
+  document.getElementById('rr-stat-trash').textContent   = rrState.trashSpent.toLocaleString();
+  document.getElementById('rr-stat-wcleft').textContent  = rrState.wcLeft.toLocaleString();
+}
+function rrLog(msg) {
+  const log = document.getElementById('rr-log');
+  const div = document.createElement('div');
+  div.innerHTML = msg;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+function rrRenderTargets() {
+  const container = document.getElementById('rr-targets');
+  container.innerHTML = ATTRIBUTES.map(a => `
+    <label style="
+      display:flex;align-items:center;gap:5px;
+      padding:4px 10px;border-radius:6px;cursor:pointer;
+      border:1px solid var(--border);font-size:11px;
+      background:rgba(255,255,255,0.02);color:var(--muted);
+      user-select:none;transition:all 0.15s;
+    " id="rr-target-label-${a.replace(/\s+/g,'_')}">
+      <input type="checkbox" id="rr-target-${a.replace(/\s+/g,'_')}" value="${a}"
+        style="accent-color:var(--accent)"
+        onchange="rrUpdateTargetLabel('${a}')">
+      ${a}
+    </label>
+  `).join('');
+}
+
+function rrUpdateTargetLabel(attr) {
+  const id = attr.replace(/\s+/g,'_');
+  const cb = document.getElementById(`rr-target-${id}`);
+  const label = document.getElementById(`rr-target-label-${id}`);
+  label.style.borderColor = cb.checked ? 'var(--accent)' : 'var(--border)';
+  label.style.color = cb.checked ? 'var(--accent)' : 'var(--muted)';
+  label.style.background = cb.checked ? 'rgba(0,200,255,0.08)' : 'rgba(255,255,255,0.02)';
+}
+
+function rrGetTargets() {
+  return ATTRIBUTES.filter(a => {
+    const cb = document.getElementById(`rr-target-${a.replace(/\s+/g,'_')}`);
+    return cb && cb.checked;
+  });
+}
+
+// แทนที่ฟังก์ชัน rrRoll() ทั้งหมด
+function rrRoll() {
+  if (!rrState) return;
+  const { wc, trash } = rrGetCost();
+
+  if (rrState.wcLeft < wc || rrState.trashLeft < trash) {
+    rrLog(`❌ Not enough ${rrState.wcLeft < wc ? 'WC' : 'Trash Wings'}! Auto stopped.`);
+    rrStopAuto();
+    return;
+  }
+
+  rrState.wcLeft    -= wc;
+  rrState.trashLeft -= trash;
+  rrState.wcSpent   += wc;
+  rrState.trashSpent+= trash;
+  rrState.rolls++;
+  
+const changed = [];
+rrState.slots.forEach((slot, i) => {
+  if (slot.locked) return;
+  const newAttr = ATTRIBUTES[Math.floor(Math.random() * ATTRIBUTES.length)];
+  if (newAttr !== slot.attr) changed.push(`Slot ${i+4}: ${newAttr}`);
+  slot.attr = newAttr;
+});
+
+  rrLog(`#${rrState.rolls} → ${changed.length ? changed.join(' · ') : 'No change'}`);
+
+  // Check targets
+  const targets = rrGetTargets();
+  if (targets.length > 0) {
+    const currentAttrs = rrState.slots.filter(s => !s.locked).map(s => s.attr);
+    const matched = targets.filter(t => currentAttrs.includes(t));
+    const allFound = matched.length === targets.length;
+
+    if (rrState.autoLock && matched.length > 0) {
+      // Auto Lock — lock slots ที่ match target
+      rrState.slots.forEach(slot => {
+        if (matched.includes(slot.attr)) slot.locked = true;
+      });
+      rrLog(`🔒 Auto Locked: ${matched.join(', ')}`);
+
+      if (allFound) {
+        rrLog(`✅ All targets found & locked! Rolling for remaining...`);
+        // ถ้า lock ครบ 6 แล้ว หยุด
+        const lockedCount = rrState.slots.filter(s => s.locked).length;
+        if (lockedCount >= 6 || rrState.slots.every(s => s.locked)) {
+          rrLog(`🎉 All target slots locked! Done!`);
+          rrStopAuto();
+        }
+      }
+    } else if (!rrState.autoLock && allFound) {
+      // Auto Run only — หยุดเมื่อเจอทุก target
+      rrLog(`🎉 All targets found! Stopped.`);
+      rrStopAuto();
+    }
+  }
+
+  rrRenderSlots();
+  rrUpdateCost();
+  rrUpdateStats();
+}
+
+// แทนที่ rrStopAuto()
+function rrStopAuto() {
+  if (rrAutoTimer) { clearInterval(rrAutoTimer); rrAutoTimer = null; }
+  document.getElementById('rr-auto-btn').textContent = '⏩ Auto Run';
+  document.getElementById('rr-auto-btn').style.background = 'rgba(0,200,255,0.1)';
+  if (rrState) rrState.autoLock = false;
+  document.getElementById('rr-autolock-btn').style.background = 'rgba(240,192,64,0.1)';
+  document.getElementById('rr-autolock-btn').textContent = '🔒 Auto Lock';
+}
+
+// แทนที่ event listeners ของ auto ทั้งหมด
+document.getElementById('rr-init-btn').addEventListener('click', () => {
+  rrStopAuto(); rrInit(); rrRenderTargets();
+});
+document.getElementById('rr-roll-btn').addEventListener('click', rrRoll);
+
+document.getElementById('rr-auto-btn').addEventListener('click', () => {
+  if (rrAutoTimer) { rrStopAuto(); return; }
+  if (!rrState) { rrInit(); rrRenderTargets(); }
+  document.getElementById('rr-auto-btn').textContent = '⏸ Pause';
+  document.getElementById('rr-auto-btn').style.background = 'rgba(0,200,255,0.2)';
+  rrAutoTimer = setInterval(() => {
+    const { wc, trash } = rrGetCost();
+    if (rrState.wcLeft < wc || rrState.trashLeft < trash) { rrStopAuto(); return; }
+    rrRoll();
+  }, 80);
+});
+
+document.getElementById('rr-autolock-btn').addEventListener('click', () => {
+  if (!rrState) { rrInit(); rrRenderTargets(); }
+  rrState.autoLock = !rrState.autoLock;
+  const btn = document.getElementById('rr-autolock-btn');
+
+  if (rrState.autoLock) {
+    btn.textContent = '🔒 Auto Lock ON';
+    btn.style.background = 'rgba(240,192,64,0.25)';
+    // ถ้ายังไม่ได้ run ให้ run ด้วย
+    if (!rrAutoTimer) {
+      document.getElementById('rr-auto-btn').textContent = '⏸ Pause';
+      document.getElementById('rr-auto-btn').style.background = 'rgba(0,200,255,0.2)';
+      rrAutoTimer = setInterval(() => {
+        const { wc, trash } = rrGetCost();
+        if (rrState.wcLeft < wc || rrState.trashLeft < trash) { rrStopAuto(); return; }
+        rrRoll();
+      }, 80);
+    }
+  } else {
+    btn.textContent = '🔒 Auto Lock';
+    btn.style.background = 'rgba(240,192,64,0.1)';
+  }
+});
+
+// ===== ABSORB ANALYSIS =====
+const AB_PER_P = {
+  attack: 215,
+  hp: 21500,
+  crit: 0.01,
+  skill: 0.002,
+  talisman: 0.001,
+};
+
+function abParseVal(str) {
+  if (!str) return 0;
+  str = str.toString().trim().toUpperCase();
+  const num = parseFloat(str);
+  if (isNaN(num)) return 0;
+  if (str.endsWith('T')) return num * 1e12;
+  if (str.endsWith('B')) return num * 1e9;
+  if (str.endsWith('M')) return num * 1e6;
+  if (str.endsWith('K')) return num * 1e3;
+  return num;
+}
+
+function abFormatVal(n, isPercent) {
+  if (isPercent) return n.toLocaleString(undefined, {maximumFractionDigits:3}) + '%';
+  // HP/Attack — use game-style K/M/B/T
+  if (n >= 1e12) return (n/1e12).toLocaleString(undefined,{maximumFractionDigits:3}) + 'T';
+  if (n >= 1e9)  return (n/1e9).toLocaleString(undefined,{maximumFractionDigits:3}) + 'B';
+  if (n >= 1e6)  return (n/1e6).toLocaleString(undefined,{maximumFractionDigits:3}) + 'M';
+  if (n >= 1e3)  return (n/1e3).toLocaleString(undefined,{maximumFractionDigits:3}) + 'K';
+  return n.toLocaleString();
+}
+
+function abBarColor(pct) {
+  return pct >= 100 ? '#f0c040' : '#00c8ff';
+}
+
+function abCalc() {
+  const stats = [
+    { id:'hp',       label:'HP',                   cur: abParseVal(document.getElementById('ab-hp-cur').value),  max: abParseVal(document.getElementById('ab-hp-max').value),  perP: AB_PER_P.hp,       isPercent: false },
+    { id:'attack',   label:'Attack',               cur: abParseVal(document.getElementById('ab-atk-cur').value), max: abParseVal(document.getElementById('ab-atk-max').value), perP: AB_PER_P.attack,   isPercent: false },
+    { id:'crit',     label:'Critical Hit Damage',  cur: parseFloat(document.getElementById('ab-crit-cur').value)||0,  max: parseFloat(document.getElementById('ab-crit-max').value)||0,  perP: AB_PER_P.crit,     isPercent: true },
+    { id:'skill',    label:'Skill Damage',         cur: parseFloat(document.getElementById('ab-skill-cur').value)||0, max: parseFloat(document.getElementById('ab-skill-max').value)||0, perP: AB_PER_P.skill,    isPercent: true },
+    { id:'talisman', label:'Talisman Damage',      cur: parseFloat(document.getElementById('ab-tal-cur').value)||0,  max: parseFloat(document.getElementById('ab-tal-max').value)||0,  perP: AB_PER_P.talisman, isPercent: true },
+  ];
+
+  let totalP = 0;
+  const container = document.getElementById('ab-stat-list');
+  container.innerHTML = '';
+
+  stats.forEach(s => {
+    const diff = Math.max(0, s.max - s.cur);
+    const pNeeded = s.perP > 0 ? Math.ceil(diff / s.perP) : 0;
+    const pAbsorbed = s.max > 0 ? Math.floor(s.cur / s.perP) : 0;
+    totalP += pNeeded;
+    const pct = s.max > 0 ? Math.min(100, (s.cur / s.max) * 100) : 100;
+    const isMaxed = pct >= 100;
+    const color = abBarColor(pct);
+    const curFmt = abFormatVal(s.cur, s.isPercent);
+    const maxFmt = abFormatVal(s.max, s.isPercent);
+
+    container.innerHTML += `
+      <div style="
+        background:rgba(255,255,255,0.03);
+        border:1px solid ${isMaxed ? 'rgba(240,192,64,0.4)' : 'var(--border)'};
+        border-radius:10px;
+        padding:12px 14px;
+        ${isMaxed ? 'box-shadow:0 0 12px rgba(240,192,64,0.15)' : ''}
+      ">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
+          <span style="font-weight:700;font-size:14px;color:${isMaxed ? '#f0c040' : 'var(--white)'}">
+            ${s.label} ${isMaxed ? '✨' : ''}
+          </span>
+          <span style="font-family:'Orbitron',monospace;font-size:12px;color:${color}">
+            ${pNeeded > 0 ? '+' + pNeeded.toLocaleString() + 'p needed' : 'MAXED'}
+          </span>
+        </div>
+        <div style="background:rgba(0,0,0,0.3);border-radius:20px;height:10px;margin-bottom:6px;overflow:hidden">
+          <div style="height:100%;width:${pct.toFixed(1)}%;background:${color};border-radius:20px;transition:width 0.4s ease"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);font-family:'Orbitron',monospace">
+          <span>${curFmt} / ${maxFmt}</span>
+          <span style="color:${isMaxed ? '#f0c040' : 'var(--muted)'}">absorbed: ${pAbsorbed.toLocaleString()}p</span>
+        </div>
+      </div>
+    `;
+    const allMaxed = stats.every(s => s.max > 0 && s.cur >= s.max);
+  const resultCard = document.getElementById('ab-result-card');
+  if (allMaxed) {
+    resultCard.classList.add('rgb-card');
+    document.getElementById('ab-total-p').textContent = '✨ ALL MAXED!';
+  } else {
+    resultCard.classList.remove('rgb-card');
+    document.getElementById('ab-total-p').textContent = totalP.toLocaleString() + 'p';
+  }
+  resultCard.style.display = '';
+  });
+
+  document.getElementById('ab-total-p').textContent = totalP.toLocaleString() + 'p';
+  document.getElementById('ab-result-card').style.display = '';
+}
+
+document.getElementById('ab-calc-btn').addEventListener('click', abCalc);
+
+// ===== PAGE NAV =====
+document.querySelectorAll('.nav-link[data-page]').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const page = link.dataset.page;
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(`page-${page}`).classList.add('active');
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    link.classList.add('active');
+    // close sidebar on mobile
+    if (window.innerWidth <= 640) {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebar-overlay').classList.remove('show');
+    }
+  });
+});
+
+// ===== SIDEBAR TOGGLE =====
+document.getElementById('toggle-btn').addEventListener('click', () => {
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('sidebar-overlay');
+  if (window.innerWidth <= 640) {
+    sb.classList.toggle('open');
+    ov.classList.toggle('show');
+  } else {
+    sb.classList.toggle('collapsed');
+    document.getElementById('main').classList.toggle('full');
+  }
+});
+
+document.getElementById('sidebar-overlay').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('show');
+});
+
+// ===== INIT =====
+populateWingSelects();
+calcCoefficient();
+calcATBM();
+initElixir();
+initWorld();
+rrRenderTargets(); // เพิ่มบรรทัดนี้
+</script>
+</body>
+</html>

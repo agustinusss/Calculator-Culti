@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cultivation Simulator Roblox - Tools</title>
+    <meta name="description"
+        content="Premium tools and calculators for Cultivation Simulator Roblox. Includes Pet Absorb Analysis.">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Ambient Background Elements -->
+    <div class="ambient-light light-1"></div>
+    <div class="ambient-light light-2"></div>
+
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-icon">🐲</span>
+                <h1>Cultivation Simulator</h1>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li class="dropdown">
+                        <button class="dropbtn">Tools <span class="arrow">▼</span></button>
+                        <div class="dropdown-content">
+                            <a href="#" data-target="home" data-title="Home" class="nav-tool active">Home</a>
+                            <a href="#" data-target="wing-calculator" data-title="Wing Calculator" class="nav-tool">Wing
+                                Calculator</a>
+                            <a href="#" data-target="elixir-calculator" data-title="Elixir Calculator"
+                                class="nav-tool">Elixir Calculator</a>
+                            <a href="#" data-target="world-calculator" data-title="World Calculator"
+                                class="nav-tool">World Calculator</a>
+                            <a href="#" data-target="wing-simulator" data-title="Wing Simulator" class="nav-tool">Wing
+                                Simulator</a>
+                            <a href="#" data-target="reroll-simulator" data-title="Reroll Simulator"
+                                class="nav-tool">Reroll Simulator</a>
+                            <a href="#" data-target="absorb-analysis" data-title="Absorb Analysis"
+                                class="nav-tool">Absorb Analysis</a>
+                            <a href="#" data-target="pet-absorb-analysis" data-title="Pet Absorb Analysis"
+                                class="nav-tool">Pet Absorb Analysis</a>
+                        </div>
+                    </li>
+                    <li class="dropdown">
+                        <button class="dropbtn">Links <span class="arrow">▼</span></button>
+                        <div class="dropdown-content">
+                            <a href="https://www.roblox.com" target="_blank">Roblox Game</a>
+                            <a href="https://discord.com" target="_blank">Discord Server</a>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Home Section -->
+        <section id="home" class="tool-section active">
+            <div class="home-hero">
+                <h1 class="hero-title">Cultivation Simulator Tools</h1>
+                <p class="hero-subtitle"></p>
+                <div class="typewriter">
+                    Explore <span id="typewriter-text" class="text-accent"></span>
+                </div>
+
+                <div class="home-tools-grid">
+                    <button class="home-tool-card"
+                        onclick="document.querySelector('[data-target=\'wing-calculator\']').click()">Wing
+                        Calculator</button>
+                    <button class="home-tool-card"
+                        onclick="document.querySelector('[data-target=\'elixir-calculator\']').click()">Elixir
+                        Calculator</button>
+                    <button class="home-tool-card"
+                        onclick="document.querySelector('[data-target=\'world-calculator\']').click()">World Rate
+                        Calculator</button>
+                    <button class="home-tool-card"
+                        onclick="document.querySelector('[data-target=\'wing-simulator\']').click()">Wing
+                        Simulator</button>
+                    <button class="home-tool-card"
+                        onclick="document.querySelector('[data-target=\'reroll-simulator\']').click()">Reroll
+                        Simulator</button>
+                    <button class="home-tool-card"
+                        onclick="document.querySelector('[data-target=\'absorb-analysis\']').click()">Absorb
+                        Analysis</button>
+                    <button class="home-tool-card"
+                        onclick="document.querySelector('[data-target=\'pet-absorb-analysis\']').click()">Pet
+                        Absorb</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pet Absorb Analysis Section -->
+        <section id="pet-absorb-analysis" class="tool-section">
+            <div class="card glass">
+                <div class="card-header">
+                    <h2>Pet Absorb Analysis</h2>
+                    <p class="subtitle">Calculate required elixirs based on your Pet's potential</p>
+                </div>
+
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="hp-sekarang">Current HP Potential</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="hp-sekarang" class="secure-input" placeholder="0.00"
+                                autocomplete="off">
+                            <span class="input-border"></span>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="hp-maksimal">Max HP Potential</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="hp-maksimal" class="secure-input" placeholder="0.00"
+                                autocomplete="off">
+                            <span class="input-border"></span>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="atk-sekarang">Current Atk Potential</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="atk-sekarang" class="secure-input" placeholder="0.00"
+                                autocomplete="off">
+                            <span class="input-border"></span>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="atk-maksimal">Max Atk Potential</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="atk-maksimal" class="secure-input" placeholder="0.00"
+                                autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress Bars -->
+                <div class="progress-section" style="margin-top: 2rem;">
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>HP Potential</span>
+                            <span id="hp-percent">0%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" id="hp-bar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                    <div class="progress-container" style="margin-top: 1rem;">
+                        <div class="progress-label">
+                            <span>Atk Potential</span>
+                            <span id="atk-percent">0%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" id="atk-bar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results glass-inner" id="pet-results">
+                    <div class="results-placeholder">
+                        <p>Awaiting valid input data...</p>
+                    </div>
+                    <div class="results-content" style="display: none;">
+                        <h3>Analysis Results</h3>
+                        <div class="result-missing">
+                            <div class="missing-stat">
+                                <span>Missing HP</span>
+                                <strong id="out-hp" class="text-accent">0</strong>
+                            </div>
+                            <div class="missing-stat">
+                                <span>Missing Atk</span>
+                                <strong id="out-atk" class="text-accent">0</strong>
+                            </div>
+                        </div>
+
+                        <h4>Estimated Elixirs Needed</h4>
+                        <div class="elixir-list" id="elixir-list">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Wing Calculator Section -->
+        <section id="wing-calculator" class="tool-section">
+            <div class="card glass">
+                <div class="card-header">
+                    <h2>Wing Calculator</h2>
+                    <p class="subtitle">Calculate Wing Coefficient and ATBM%</p>
+                </div>
+
+                <div class="results glass-inner">
+                    <h3>Max Wing Coefficients (Reference)</h3>
+                    <div class="coeff-grid"
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 1rem;">
+                        <div class="missing-stat"><span>ATBM</span><strong>1.500</strong></div>
+                        <div class="missing-stat"><span>DTM</span><strong>1.200</strong></div>
+                        <div class="missing-stat"><span>DTP</span><strong>0.450</strong></div>
+                        <div class="missing-stat"><span>HPBM</span><strong>1.500</strong></div>
+                        <div class="missing-stat"><span>Speed</span><strong>0.900</strong></div>
+                    </div>
+                </div>
+
+                <div class="input-grid" style="margin-top: 2rem;">
+                    <!-- Coefficient Calculator -->
+                    <div class="glass-inner" style="margin-top: 0;">
+                        <h3>Wing Coefficient</h3>
+                        <div class="input-group" style="margin-bottom: 1rem;">
+                            <label>Wing Percentage (ATBM %)</label>
+                            <input type="text" id="coeff-pct" class="secure-input" placeholder="0.000">
+                        </div>
+                        <div class="input-group" style="margin-bottom: 1rem;">
+                            <label>Level</label>
+                            <input type="text" id="coeff-level" class="secure-input" placeholder="1">
+                        </div>
+                        <div class="input-group" style="margin-bottom: 1rem;">
+                            <label>Rarity Wing</label>
+                            <select id="coeff-rarity" class="secure-input"></select>
+                            <div id="coeff-badge" class="rarity-badge mt-2"
+                                style="margin-top: 0.5rem; display: inline-block; padding: 0.2rem 0.5rem; border-radius: 0.5rem; border: 1px solid var(--border-color); font-size: 0.8rem;">
+                                Scarce</div>
+                        </div>
+                        <div class="result-missing" style="margin-top: 1rem;">
+                            <div class="missing-stat" style="width: 100%;">
+                                <span>Wing Coefficient</span>
+                                <strong id="coeff-result" class="text-accent">0.00000</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ATBM Calculator -->
+                    <div class="glass-inner" style="margin-top: 0;">
+                        <h3>ATBM Calculator</h3>
+                        <div class="input-group" style="margin-bottom: 1rem;">
+                            <label>Wing Coefficient</label>
+                            <input type="text" id="atbm-coeff" class="secure-input" placeholder="0.00000">
+                        </div>
+                        <div class="input-group" style="margin-bottom: 1rem;">
+                            <label>Level</label>
+                            <input type="text" id="atbm-level" class="secure-input" placeholder="1">
+                        </div>
+                        <div class="input-group" style="margin-bottom: 1rem;">
+                            <label>Rarity Wing</label>
+                            <select id="atbm-rarity" class="secure-input"></select>
+                            <div id="atbm-badge" class="rarity-badge mt-2"
+                                style="margin-top: 0.5rem; display: inline-block; padding: 0.2rem 0.5rem; border-radius: 0.5rem; border: 1px solid var(--border-color); font-size: 0.8rem;">
+                                Scarce</div>
+                        </div>
+                        <div class="result-missing" style="margin-top: 1rem;">
+                            <div class="missing-stat" style="width: 100%; border-color: #f59e0b;">
+                                <span>ATBM %</span>
+                                <strong id="atbm-result" style="color: #f59e0b;">0.000%</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Elixir Calculator Section -->
+        <section id="elixir-calculator" class="tool-section">
+            <div class="card glass">
+                <div class="card-header">
+                    <h2>Elixir Calculator</h2>
+                    <p class="subtitle">Calculate total points and absorb stats from elixirs</p>
+                </div>
+                <div class="results glass-inner" style="margin-top: 0;">
+                    <h3>Select Rarities</h3>
+                    <div class="elixir-checkboxes" id="elixir-checkboxes"
+                        style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;"></div>
+                </div>
+
+                <div id="elixir-sections"
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 2rem;">
+                </div>
+
+                <div class="input-grid" style="margin-top: 2rem;">
+                    <div class="glass-inner" style="margin-top: 0;">
+                        <h3>Total Points</h3>
+                        <div id="elixir-points-totals"
+                            style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;"></div>
+                    </div>
+                    <div class="glass-inner" style="margin-top: 0;">
+                        <h3>Total Absorb Stats</h3>
+                        <div id="elixir-absorb-totals"
+                            style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- World Calculator Section -->
+        <section id="world-calculator" class="tool-section">
+            <div class="card glass">
+                <div class="card-header">
+                    <h2>World Rate Calculator</h2>
+                    <p class="subtitle">Calculate farming rates per hour</p>
+                </div>
+
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>Difficulty</label>
+                        <select id="difficulty-select" class="secure-input"></select>
+                    </div>
+                    <div class="input-group">
+                        <label>World</label>
+                        <select id="world-select" class="secure-input"></select>
+                    </div>
+                </div>
+
+                <div class="results glass-inner">
+                    <h3>Base Stats</h3>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+                        <div class="missing-stat"><span>Exp / Clear</span><strong id="base-exp"
+                                class="text-accent">—</strong></div>
+                        <div class="missing-stat"><span>Ore / Drop</span><strong id="base-ore"
+                                class="text-accent">—</strong></div>
+                        <div class="missing-stat"><span>Gold / Clear</span><strong id="base-gold"
+                                style="color:#f59e0b">—</strong></div>
+                    </div>
+                </div>
+
+                <div class="input-grid" style="margin-top: 2rem;">
+                    <div class="input-group">
+                        <label>Clear Time (sec)</label>
+                        <input type="text" id="clear-time" class="secure-input" value="60">
+                    </div>
+                </div>
+
+                <div class="input-grid" style="margin-top: 2rem;">
+                    <div class="glass-inner" style="margin-top: 0;">
+                        <h3>Drop Buff (%)</h3>
+                        <div class="input-group" style="margin-bottom: 1rem;">
+                            <label>Gold Drop %</label>
+                            <input type="text" id="gold-drop" class="secure-input" value="0">
+                        </div>
+                        <div class="input-group" style="margin-bottom: 1rem;">
+                            <label>Ore Drop %</label>
+                            <input type="text" id="ore-drop" class="secure-input" value="0">
+                        </div>
+                        <div class="input-group">
+                            <label>Exp Gain %</label>
+                            <input type="text" id="exp-gain" class="secure-input" value="0">
+                        </div>
+                    </div>
+                    <div class="glass-inner" style="margin-top: 0;">
+                        <h3>Extra Drop</h3>
+                        <div class="input-group" style="margin-bottom: 1rem;">
+                            <label>Extra Gold Drop</label>
+                            <input type="text" id="extra-gold" class="secure-input" value="0">
+                        </div>
+                        <div class="input-group">
+                            <label>Extra Exp Drop</label>
+                            <input type="text" id="extra-exp" class="secure-input" value="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results glass-inner">
+                    <h3>Rates Per Hour</h3>
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                        <div class="missing-stat"><span>Exp / Hour</span><strong id="result-xp">0</strong></div>
+                        <div class="missing-stat"><span>Ore / Hour</span><strong id="result-ore">0</strong></div>
+                        <div class="missing-stat"><span>Gold / Hour</span><strong id="result-gold">0</strong></div>
+                        <div class="missing-stat"><span>Clears / Hour</span><strong id="result-clears">0</strong></div>
+                    </div>
+                    <button class="dropbtn" id="compare-btn"
+                        style="background: rgba(14, 165, 233, 0.2); border: 1px solid var(--primary); display: inline-block;">+
+                        Add to Compare</button>
+                    <button class="dropbtn" id="clear-compare-btn"
+                        style="background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #ef4444; display: inline-block; margin-left: 1rem;">Clear</button>
+                </div>
+
+                <div class="results glass-inner">
+                    <h3>World Comparison</h3>
+                    <div id="compare-container" style="overflow-x: auto;">
+                        <p class="text-muted">No worlds added yet.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Wing Simulator Section -->
+        <section id="wing-simulator" class="tool-section">
+            <div class="card glass">
+                <div class="card-header">
+                    <h2>Wing Simulator</h2>
+                    <p class="subtitle">Simulate wing upgrades and tracking</p>
+                </div>
+
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>Starting Rarity</label>
+                        <select id="sim-start-rarity" class="secure-input">
+                            <option value="0">Scarce</option>
+                            <option value="1">Epic</option>
+                            <option value="2">Legendary</option>
+                            <option value="3">Immortal</option>
+                            <option value="4">Mythic</option>
+                            <option value="5">Eternal</option>
+                            <option value="6">Celestial</option>
+                            <option value="7">Primordial</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Target Rarity</label>
+                        <select id="sim-target-rarity" class="secure-input">
+                            <option value="1">Epic</option>
+                            <option value="2">Legendary</option>
+                            <option value="3">Immortal</option>
+                            <option value="4">Mythic</option>
+                            <option value="5">Eternal</option>
+                            <option value="6">Celestial</option>
+                            <option value="7">Primordial</option>
+                            <option value="8">Transcendent</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-group" style="margin-top: 1.5rem;">
+                    <label>Wing Core (WC) Amount</label>
+                    <input type="text" id="sim-wc" class="secure-input" value="100">
+                </div>
+
+                <div style="margin-top: 1.5rem;">
+                    <button class="dropbtn" id="sim-run-btn"
+                        style="background: rgba(14, 165, 233, 0.2); border: 1px solid var(--primary); display: inline-block;">▶
+                        Run Simulation</button>
+                    <button class="dropbtn" id="sim-reset-btn"
+                        style="background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #ef4444; display: inline-block; margin-left: 1rem;">↺
+                        Reset</button>
+                </div>
+
+                <div class="results glass-inner" id="sim-status-card" style="display:none;">
+                    <h3>Current Run</h3>
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                        <div class="missing-stat"><span>Current Rarity</span><strong id="sim-cur-rarity">—</strong>
+                        </div>
+                        <div class="missing-stat"><span>WC Remaining</span><strong id="sim-wc-left">—</strong></div>
+                        <div class="missing-stat"><span>Current Rate</span><strong id="sim-cur-rate"
+                                style="color: #f59e0b;">—</strong></div>
+                        <div class="missing-stat"><span>Click</span><strong id="sim-attempts">—</strong></div>
+                    </div>
+
+                    <div>
+                        <button class="dropbtn" id="sim-step-btn"
+                            style="background: rgba(14, 165, 233, 0.2); border: 1px solid var(--primary); display: inline-block;">⚡
+                            Upgrade</button>
+                        <button class="dropbtn" id="sim-auto-btn"
+                            style="background: rgba(255, 255, 255, 0.1); border: 1px solid var(--text-muted); display: inline-block; margin-left: 1rem;">⏩
+                            Auto Run</button>
+                    </div>
+
+                    <h4 style="margin-top: 1.5rem;">Upgrade Log</h4>
+                    <div id="sim-log"
+                        style="max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 0.5rem; font-family: monospace; color: var(--text-muted); font-size: 0.9rem;">
+                    </div>
+                </div>
+
+                <div class="results glass-inner" id="sim-stats-card">
+                    <h3>WC Usage Per Stage</h3>
+                    <div id="sim-stage-stats">
+                        <p class="text-muted">Run a simulation to see stats.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reroll Simulator Section -->
+        <section id="reroll-simulator" class="tool-section">
+            <div class="card glass">
+                <div class="card-header">
+                    <h2>Reroll Simulator</h2>
+                    <p class="subtitle">Simulate attribute rerolls</p>
+                </div>
+
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>Wing Rarity</label>
+                        <select id="rr-rarity" class="secure-input">
+                            <option value="0">Scarce (1 slot)</option>
+                            <option value="1">Epic (2 slots)</option>
+                            <option value="2">Legendary (3 slots)</option>
+                            <option value="3">Immortal (4 slots)</option>
+                            <option value="4">Mythic (5 slots)</option>
+                            <option value="5">Eternal (6 slots)</option>
+                            <option value="6">Celestial (7 slots)</option>
+                            <option value="7">Primordial (8 slots)</option>
+                            <option value="8">Transcendent (9 slots)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>WC Available</label>
+                        <input type="text" id="rr-wc" class="secure-input" value="1000">
+                    </div>
+                </div>
+                <div class="input-group" style="margin-top: 1.5rem;">
+                    <label>Trash Wings Available</label>
+                    <input type="text" id="rr-trash" class="secure-input" value="100">
+                </div>
+
+                <div style="margin-top: 1.5rem;">
+                    <button class="dropbtn" id="rr-init-btn"
+                        style="background: rgba(14, 165, 233, 0.2); border: 1px solid var(--primary); display: inline-block;">▶
+                        Start / Reset</button>
+                </div>
+
+                <div class="results glass-inner" id="rr-slots-card" style="display:none;">
+                    <h3>Current Attributes</h3>
+
+                    <h4 style="margin-top: 1rem;">Fixed Slots</h4>
+                    <div id="rr-fixed-slots"
+                        style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem;"></div>
+
+                    <h4>Rerollable Slots</h4>
+                    <div id="rr-slots"
+                        style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem;"></div>
+
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 0.5rem;">
+                        <div>
+                            <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Reroll
+                                Cost</span>
+                            <div style="font-size: 1.2rem; font-weight: bold; color: var(--accent);"
+                                id="rr-cost-display">0 WC + 1 Trash</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <span
+                                style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Remaining</span>
+                            <div style="font-size: 1.1rem; font-weight: bold;"><span id="rr-wc-left">—</span> WC · <span
+                                    id="rr-trash-left">—</span> Trash</div>
+                        </div>
+                    </div>
+
+                    <div
+                        style="margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                        <h4 style="margin: 0;">Auto Target</h4>
+                        <button class="dropbtn"
+                            onclick="document.getElementById('rr-targets-wrap').classList.toggle('active-target-wrap')"
+                            style="font-size: 0.8rem; padding: 0.3rem 0.6rem;">SHOW/HIDE</button>
+                    </div>
+                    <div id="rr-targets-wrap" style="display: none; margin-top: 1rem;">
+                        <div id="rr-targets" style="display: flex; flex-wrap: wrap; gap: 0.5rem;"></div>
+                    </div>
+
+                    <div style="margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem;">
+                        <button class="dropbtn" id="rr-roll-btn"
+                            style="background: rgba(14, 165, 233, 0.2); border: 1px solid var(--primary);">🎲
+                            Reroll</button>
+                        <button class="dropbtn" id="rr-auto-btn"
+                            style="background: rgba(255, 255, 255, 0.1); border: 1px solid var(--text-muted);">⏩ Auto
+                            Run</button>
+                        <button class="dropbtn" id="rr-autolock-btn"
+                            style="background: rgba(245, 158, 11, 0.1); border: 1px solid #f59e0b; color: #f59e0b;">🔒
+                            Auto Lock</button>
+                    </div>
+
+                    <h4 style="margin-top: 1.5rem;">Roll Log</h4>
+                    <div id="rr-log"
+                        style="max-height: 150px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 0.5rem; font-family: monospace; color: var(--text-muted); font-size: 0.9rem;">
+                    </div>
+                </div>
+
+                <div class="results glass-inner" id="rr-stats-card" style="display:none;">
+                    <h3>Session Stats</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem;">
+                        <div class="missing-stat"><span>Total Rerolls</span><strong id="rr-stat-rolls">0</strong></div>
+                        <div class="missing-stat"><span>WC Spent</span><strong id="rr-stat-wc">0</strong></div>
+                        <div class="missing-stat"><span>Trash Spent</span><strong id="rr-stat-trash">0</strong></div>
+                        <div class="missing-stat"><span>WC Left</span><strong id="rr-stat-wcleft"
+                                style="color: #f59e0b;">0</strong></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Absorb Analysis Section (General) -->
+        <section id="absorb-analysis" class="tool-section">
+            <div class="card glass">
+                <div class="card-header">
+                    <h2>Absorb Analysis</h2>
+                    <p class="subtitle">Calculate points needed to max all stats</p>
+                </div>
+
+                <div class="results glass-inner" style="margin-top: 0; margin-bottom: 2rem;">
+                    <p class="text-muted" style="text-align: center;">1p = Attack 215 · HP 20,000 · Crit 0.01% · Skill
+                        0.002% · Talisman 0.001%</p>
+                </div>
+
+                <div class="input-grid">
+                    <div class="glass-inner" style="margin-top: 0;">
+                        <h3>HP</h3>
+                        <div class="input-group" style="margin-bottom: 1rem;">
+                            <label>Current</label>
+                            <input type="text" id="ab-hp-cur" class="secure-input" placeholder="e.g. 2870B">
+                        </div>
+                        <div class="input-group">
+                            <label>Max</label>
+                            <input type="text" id="ab-hp-max" class="secure-input" placeholder="e.g. 4040B">
+                        </div>
+                    </div>
+                    <div class="glass-inner" style="margin-top: 0;">
+                        <h3>Attack</h3>
+                        <div class="input-group" style="margin-bottom: 1rem;">
+                            <label>Current</label>
+                            <input type="text" id="ab-atk-cur" class="secure-input" placeholder="e.g. 2970M">
+                        </div>
+                        <div class="input-group">
+                            <label>Max</label>
+                            <input type="text" id="ab-atk-max" class="secure-input" placeholder="e.g. 4171M">
+                        </div>
+                    </div>
+                    <div class="glass-inner" style="margin-top: 0;">
+                        <h3>Critical Hit Damage (%)</h3>
+                        <div class="input-group" style="margin-bottom: 1rem;">
+                            <label>Current</label>
+                            <input type="text" id="ab-crit-cur" class="secure-input" placeholder="82415">
+                        </div>
+                        <div class="input-group">
+                            <label>Max</label>
+                            <input type="text" id="ab-crit-max" class="secure-input" placeholder="82415">
+                        </div>
+                    </div>
+                    <div class="glass-inner" style="margin-top: 0;">
+                        <h3>Skill Damage (%)</h3>
+                        <div class="input-group" style="margin-bottom: 1rem;">
+                            <label>Current</label>
+                            <input type="text" id="ab-skill-cur" class="secure-input" placeholder="16483">
+                        </div>
+                        <div class="input-group">
+                            <label>Max</label>
+                            <input type="text" id="ab-skill-max" class="secure-input" placeholder="16483">
+                        </div>
+                    </div>
+                    <div class="glass-inner" style="margin-top: 0;">
+                        <h3>Talisman Damage (%)</h3>
+                        <div class="input-group" style="margin-bottom: 1rem;">
+                            <label>Current</label>
+                            <input type="text" id="ab-tal-cur" class="secure-input" placeholder="8241.5">
+                        </div>
+                        <div class="input-group">
+                            <label>Max</label>
+                            <input type="text" id="ab-tal-max" class="secure-input" placeholder="8241.5">
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem;">
+                    <button class="dropbtn" id="ab-calc-btn"
+                        style="width: 100%; background: rgba(14, 165, 233, 0.2); border: 1px solid var(--primary); text-align: center; justify-content: center; padding: 1rem;">📊
+                        Analyze</button>
+                </div>
+
+                <div class="results glass-inner" id="ab-result-card" style="display:none;">
+                    <h3>Points Needed to Max</h3>
+                    <div id="ab-stat-list"
+                        style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;"></div>
+
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 0.5rem; border: 1px solid var(--primary);">
+                        <span
+                            style="font-size: 1rem; color: var(--text-muted); font-weight: bold; text-transform: uppercase;">Total
+                            Points Needed</span>
+                        <div style="font-size: 1.5rem; font-weight: bold; color: #f59e0b;" id="ab-total-p">0p</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+
+
+    <script src="script.js"></script>
+</body>
+
+</html>
